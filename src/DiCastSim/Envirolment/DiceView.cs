@@ -1,5 +1,4 @@
-﻿using Autofac;
-using DiCastSim.Core;
+﻿using DiCastSim.Core;
 using DiCastSim.Core.Enums;
 using DiCastSim.Core.Services;
 using System;
@@ -27,17 +26,16 @@ namespace DiCastSim.Envirolment
             get
             {
                 SpecialDice = Tipo;
-                return dc.Get(Tipo);
+                return dc.EvaluateDice(Tipo);
             }
         }
 
-        public DiceView(int? x = null, bool forceNumbers = false)
+        public DiceView(Dice tipo)
         {
             InitializeComponent();
-            dc = IOC.Resolve<DiceGenerator>();
-            Tipo = dc.Get(forceNumbers);
-            if (x.HasValue) Tipo = (Dice)x;
+            Tipo = tipo;
             label1.Text = Tipo.ToString();
+            dc = IOC.Resolve<DiceGenerator>();
         }
 
         private void label1_Click(object sender, EventArgs e)

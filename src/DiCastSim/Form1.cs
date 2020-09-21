@@ -1,5 +1,6 @@
 ﻿using DiCastSim.Core;
 using DiCastSim.Core.Enums;
+using DiCastSim.Core.Models;
 using DiCastSim.Core.Services;
 using DiCastSim.Envirolment;
 using DiCastSim.Objects;
@@ -15,21 +16,23 @@ namespace DiCastSim
         PlayerSprit sprite1, sprite2;
         PlayerSprit CurrentSprite => game.PlayerTurn == Game.Who.Player1 ? sprite1 : sprite2;
         readonly LinkItem linkedItem = new LinkItem();
-        readonly RandomContext rc;
+        readonly RandomContext rand;
         readonly Game game;
-        readonly MonsterService ms;
+        readonly MonsterService monsterS;
+        Player player1 => game.GetPlayer(Game.Who.Player1);
+        Player player2 => game.GetPlayer(Game.Who.Player2);
 
         public Form1()
         {
             InitializeComponent();
             game = IOC.Resolve<Game>();
-            rc = IOC.Resolve<RandomContext>();
-            ms = IOC.Resolve<MonsterService>();
+            rand = IOC.Resolve<RandomContext>();
+            monsterS = IOC.Resolve<MonsterService>();
         }
 
         protected override void OnLoad(EventArgs e)
         {
-            StartGame(Game.Who.Player1);       
+            StartGame(Game.Who.Player1);
         }
 
         private void StartGame(Game.Who who)
@@ -70,8 +73,8 @@ namespace DiCastSim
                 BackgroundImage = Properties.Resources.superhero1
             };
             sprite1.deck.Controls.Clear();
-            for (int i = 0; i < 2; i++) AddDice(sprite1);
-            game.GetPlayer(Game.Who.Player1).GoHome();
+            foreach (var item in player1.SpecialDices) AddDice(sprite1, item);
+            player1.GoHome();
             Mov(0, sprite1);
         }
 
@@ -83,16 +86,28 @@ namespace DiCastSim
                 BackgroundImage = Properties.Resources.superhero2
             };
             sprite2.deck.Controls.Clear();
-            for (int i = 0; i < 2; i++) AddDice(sprite2);
-            game.GetPlayer(Game.Who.Player2).GoHome();
+            foreach (var item in player2.SpecialDices) AddDice(sprite2, item);
+            player2.GoHome();
             Mov(12, sprite2);
         }
 
-        private void AddDice(PlayerSprit pv, int? x = null, bool forceNumbers = false)
+        private void AddDice(PlayerSprit pv, Dice dice)
         {
-            var d = new DiceView(x, forceNumbers);
+            var d = new DiceView(dice);
             d.Clicked += Dice_Clicked;
             pv.deck.Controls.Add(d);
+        }
+
+        private void AddDice(PlayerSprit pv, bool forceNumber = false)
+        {
+            if (forceNumber)
+                game.Player.Hand.GetNumberDice();
+            else
+                game.Player.Hand.GetNextDice();
+
+            var dice = game.Player.Hand.Last();
+
+            AddDice(pv, dice);
         }
 
         private void Dice_Clicked(object sender, EventArgs e)
@@ -103,23 +118,23 @@ namespace DiCastSim
             if (obj.Parent == flowLayoutPanel1 && CurrentSprite != sprite1) return;
             if (obj.Parent == flowLayoutPanel2 && CurrentSprite != sprite2) return;
 
-            var v = obj.ThrowDice();
+            var diceFace = obj.ThrowDice();
 
-            if (game.Hunting && v.HasValue)
+            if (game.Hunting && diceFace.HasValue)
             {
                 // Evita numeros negativos
-                var x = v.Value < 0 ? v.Value * -1 : v.Value;
+                var x = diceFace.Value < 0 ? diceFace.Value * -1 : diceFace.Value;
 
-                if (ms.AtackMonster(x))
+                if (monsterS.AtackMonster(x))
                 {
                     MessageBox.Show("Monster Defeated");
                     game.Player.Atack += 1;
-                    game.Player.Coins += ms.Coins;
+                    game.Player.Coins += monsterS.Coins;
                 }
                 else
                 {
                     MessageBox.Show("You lose");
-                    game.Player.Life -= ms.Atack;
+                    game.Player.Life -= monsterS.Atack;
                 }
 
                 huntMonster1.Visible = false;
@@ -135,10 +150,10 @@ namespace DiCastSim
                 return;
             }
 
-            if (v.HasValue)
+            if (diceFace.HasValue)
             {
-                button1.Text = v.ToString();
-                Mov(v.Value, CurrentSprite);
+                button1.Text = diceFace.ToString();
+                Mov(diceFace.Value, CurrentSprite);
                 DoAction();
             }
             else
@@ -174,11 +189,20 @@ namespace DiCastSim
         private void SwitchPlayers()
         {
             pictureBox2.Visible = pictureBox1.Visible = false;
+            flowLayoutPanel1.Enabled = flowLayoutPanel2.Enabled = false;
 
             game.SwitchPlayers();
 
-            if (game.Player == game.GetPlayer(Game.Who.Player1)) pictureBox1.Visible = true;
-            if (game.Player == game.GetPlayer(Game.Who.Player2)) pictureBox2.Visible = true;
+            if (game.Player == game.GetPlayer(Game.Who.Player1))
+            {
+                pictureBox1.Visible = true;
+                flowLayoutPanel1.Enabled = true;
+            }
+            if (game.Player == game.GetPlayer(Game.Who.Player2))
+            {
+                pictureBox2.Visible = true;
+                flowLayoutPanel2.Enabled = true;
+            }
         }
 
         public void SpawnOnMove(int position)
@@ -211,7 +235,7 @@ namespace DiCastSim
             }
         }
 
-        private Items CreateRandomItem() => (Items)rc.Get(2, game.TotalItems);
+        private Items CreateRandomItem() => (Items)rand.Get(2, game.TotalItems);
 
         private UserControl CreateItem(Items item) =>
             (UserControl)Activator.CreateInstance(linkedItem[item]);
@@ -244,17 +268,17 @@ namespace DiCastSim
                             if (x1 is MonsterOneItem)
                             {
                                 huntMonster1.Visible = true;
-                                huntMonster1.SetDices(rc.Get(0, 2) == 1 ? 5 : 4);
+                                huntMonster1.SetDices(rand.Get(0, 2) == 1 ? 5 : 4);
                                 game.Hunting = true;
-                                AddDice(CurrentSprite, null, true);
+                                AddDice(CurrentSprite, true);
                             }
 
                             if (x1 is MonsterTwoItem)
                             {
                                 huntMonster1.Visible = true;
-                                huntMonster1.SetDices(rc.Get(0, 2) == 1 ? 3 : 2);
+                                huntMonster1.SetDices(rand.Get(0, 2) == 1 ? 3 : 2);
                                 game.Hunting = true;
-                                AddDice(CurrentSprite, null, true);
+                                AddDice(CurrentSprite, true);
                             }
 
                             if (x1 is MonsterThreeItem)
@@ -262,7 +286,7 @@ namespace DiCastSim
                                 huntMonster1.Visible = true;
                                 huntMonster1.SetDices(1);
                                 game.Hunting = true;
-                                AddDice(CurrentSprite, null, true);
+                                AddDice(CurrentSprite, true);
                             }
 
                             UpdateStatus();
@@ -284,7 +308,7 @@ namespace DiCastSim
 
         private void button2_Click(object sender, EventArgs e)
         {
-            StartGame(Game.Who.Player1);            
+            StartGame(Game.Who.Player1);
             UpdateStatus();
         }
 

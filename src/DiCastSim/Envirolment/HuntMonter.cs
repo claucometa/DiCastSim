@@ -1,5 +1,5 @@
-﻿using Autofac;
-using DiCastSim.Core;
+﻿using DiCastSim.Core;
+using DiCastSim.Core.Enums;
 using DiCastSim.Core.Services;
 using DiCastSim.Envirolment;
 using System.Windows.Forms;
@@ -21,7 +21,7 @@ namespace DiCastSim
             flowLayoutPanel1.Controls.Clear();
             foreach (var item in ms.GetMonterDices(total))
             {
-                flowLayoutPanel1.Controls.Add(new DiceView(item));
+                flowLayoutPanel1.Controls.Add(new DiceView((Dice)item));
             }
         }
     }
