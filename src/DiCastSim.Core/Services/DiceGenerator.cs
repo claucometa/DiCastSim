@@ -1,26 +1,32 @@
-﻿using Autofac;
-using DiCastSim.Core.Enums;
-using System;
+﻿using DiCastSim.Core.Enums;
+using DiCastSim.Core.Models;
 
 namespace DiCastSim.Core.Services
 {
     public class DiceGenerator
     {
-        readonly RandomContext rc;
+        readonly RandomContext rand;        
+        Dice NumberedDice => (Dice)rand.Get(0, 10);
 
         public DiceGenerator()
         {
-            rc = IOC.Resolve<RandomContext>();
+            rand = IOC.Resolve<RandomContext>();
         }
 
-        public Dice Get(bool forceNumbers = false)
+        public Dice Get(Player player, bool forceNumbers = false)
         {
-            return forceNumbers ?
-                (Dice)rc.Get(0, 11)
-            : (Dice)rc.Get(0, Enum.GetValues(typeof(Dice)).Length);
+            if (forceNumbers) return NumberedDice;
+
+            // Out of Special Dices
+            if (player.SpecialDices.Count == 0)
+                return NumberedDice;
+
+            // One third possibility to get a special card
+            return rand.Get(0, 3) == 0 ?
+                player.SpecialDices.Dequeue() : NumberedDice;
         }
 
-        public int? Get(Dice Tipo)
+        public int? EvaluateDice(Dice Tipo)
         {
             switch (Tipo)
             {
@@ -36,18 +42,22 @@ namespace DiCastSim.Core.Services
                     return 5;
                 case Dice.Six:
                     return 6;
-                case Dice.NegativeOne:
+                case Dice.MinusOne:
                     return -1;
-                case Dice.NegativeRandom:
-                    return rc.Get(1, 6) * -1;
+                case Dice.MinusRandom:
+                    return rand.Get(1, 6) * -1;
                 case Dice.Even:
-                    return new int[] { 2, 4, 6 }[rc.Get(0, 3)];
+                    return new int[] { 2, 4, 6 }[rand.Get(0, 3)];
                 case Dice.Odd:
-                    return new int[] { 1, 3, 5 }[rc.Get(0, 3)];
+                    return new int[] { 1, 3, 5 }[rand.Get(0, 3)];
                 case Dice.Double:
-                    return rc.Get(1, 6) * 2;
+                    return rand.Get(1, 6) * 2;
                 case Dice.Random:
-                    return rc.Get(1, 6);
+                    return rand.Get(1, 6);
+                case Dice.High:
+                    return new int[] { 4, 5, 6 }[rand.Get(0, 3)];
+                case Dice.Low:
+                    return new int[] { 1, 2, 3 }[rand.Get(0, 3)];
             }
 
             return null;

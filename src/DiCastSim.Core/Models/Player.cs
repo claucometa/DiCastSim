@@ -1,4 +1,7 @@
-﻿namespace DiCastSim.Core.Models
+﻿using DiCastSim.Core.Enums;
+using System.Collections.Generic;
+
+namespace DiCastSim.Core.Models
 {
     public class Player
     {
@@ -13,6 +16,13 @@
         public string Name { get; set; }
         public int InitialPosition { get; set; }
         public int Turns { get; set; } = 0;
+        public PlayerSpecialDices SpecialDices = new PlayerSpecialDices();
+        public readonly PlayerHand Hand;
+
+        public Player()
+        {
+            Hand = new PlayerHand(this);
+        }
 
         public void Stun()
         {

@@ -11,12 +11,16 @@
         Six,
         Even,
         Odd,
+        Low,
+        High,
         Double,
-        NegativeOne,
-        NegativeRandom,
+        MinusOne,
+        MinusRandom,
         Home,
         SmallPotion,
         BigPotion,
         Stunt,
+        Swap,
+        Shuffle,
     }
 }
