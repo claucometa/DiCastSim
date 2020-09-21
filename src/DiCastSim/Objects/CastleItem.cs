@@ -1,18 +1,15 @@
-﻿using DiCastSim.Core;
-using DiCastSim.Core.Models;
-
-namespace DiCastSim.Objects
+﻿namespace DiCastSim.Objects
 {
     internal class CastleItem : BaseItem
     {
-        public Player Owner { get; set; }
-
         public override string Do()
         {
-            if (game.Player == Owner)
-                return $"{game.Player.Name} castle p1";
-            else
-                return $"{game.Player.Name} locked up";
+            if (game.Player == game.GetPlayer(Core.Game.Who.Player1))
+                return Index == 0 ? $"{game.Player.Name} castle p1" :
+                    $"{game.Player.Name} locked up";
+
+            return Index == 12 ? $"{game.Player.Name} castle p1" :
+                 $"{game.Player.Name} locked up";
         }
 
         public CastleItem()

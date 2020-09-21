@@ -41,20 +41,13 @@ namespace DiCastSim
 
             game.Start(who);
 
+            PlayerTwoInit();
+            PlayerOneInit();
+            
             if (who == Game.Who.Player1)
-            {
-                PlayerTwoInit();
-                PlayerOneInit();
                 AddDice(sprite1);
-            }
             else
-            {
-                PlayerOneInit();
-                PlayerTwoInit();
                 AddDice(sprite2);
-            }
-
-            SwitchPlayers();
 
             Controls.Remove(sprite1);
             Controls.Remove(sprite2);
@@ -62,7 +55,7 @@ namespace DiCastSim
             Controls.Add(sprite2);
             sprite1.BringToFront();
             sprite2.BringToFront();
-            UpdateStatus();
+            UpdateScreenItems();
         }
 
         private void PlayerOneInit()
@@ -73,7 +66,7 @@ namespace DiCastSim
                 BackgroundImage = Properties.Resources.superhero1
             };
             sprite1.deck.Controls.Clear();
-            foreach (var item in player1.SpecialDices) AddDice(sprite1, item);
+            foreach (var item in player1.Hand) AddDice(sprite1, item);
             player1.GoHome();
             Mov(0, sprite1);
         }
@@ -86,7 +79,7 @@ namespace DiCastSim
                 BackgroundImage = Properties.Resources.superhero2
             };
             sprite2.deck.Controls.Clear();
-            foreach (var item in player2.SpecialDices) AddDice(sprite2, item);
+            foreach (var item in player2.Hand) AddDice(sprite2, item);
             player2.GoHome();
             Mov(12, sprite2);
         }
@@ -120,41 +113,34 @@ namespace DiCastSim
 
             var diceFace = obj.ThrowDice();
 
-            if (game.Hunting && diceFace.HasValue)
+            if (diceFace.HasValue)
             {
-                // Evita numeros negativos
-                var x = diceFace.Value < 0 ? diceFace.Value * -1 : diceFace.Value;
-
-                if (monsterS.AtackMonster(x))
+                if (game.Hunting)
                 {
-                    MessageBox.Show("Monster Defeated");
-                    game.Player.Atack += 1;
-                    game.Player.Coins += monsterS.Coins;
+                    // Evita numeros negativos
+                    var x = diceFace.Value < 0 ? diceFace.Value * -1 : diceFace.Value;
+
+                    if (monsterS.AtackMonster(x))
+                    {
+                        MessageBox.Show("Monster Defeated");
+                        game.Player.Atack += 1;
+                        game.Player.Coins += monsterS.Coins;
+                    }
+                    else
+                    {
+                        MessageBox.Show("You lose");
+                        game.Player.Life -= monsterS.Atack;
+                    }
+                    
+                    game.Hunting = false;
+                    huntMonster1.Visible = game.Hunting;
                 }
                 else
                 {
-                    MessageBox.Show("You lose");
-                    game.Player.Life -= monsterS.Atack;
+                    button1.Text = diceFace.ToString();
+                    Mov(diceFace.Value, CurrentSprite);
+                    DoAction();
                 }
-
-                huntMonster1.Visible = false;
-
-                CurrentSprite.deck.Controls.Remove(obj);
-
-                SwitchPlayers();
-
-                game.Hunting = false;
-
-                UpdateStatus();
-                AddDice(CurrentSprite);
-                return;
-            }
-
-            if (diceFace.HasValue)
-            {
-                button1.Text = diceFace.ToString();
-                Mov(diceFace.Value, CurrentSprite);
-                DoAction();
             }
             else
             {
@@ -180,30 +166,13 @@ namespace DiCastSim
 
             CurrentSprite.deck.Controls.Remove(obj);
 
-            if (!game.Hunting) SwitchPlayers();
+            if (!game.Hunting) game.SwitchPlayers();
 
-            UpdateStatus();
+            UpdateScreenItems();
             AddDice(CurrentSprite);
         }
 
-        private void SwitchPlayers()
-        {
-            pictureBox2.Visible = pictureBox1.Visible = false;
-            flowLayoutPanel1.Enabled = flowLayoutPanel2.Enabled = false;
-
-            game.SwitchPlayers();
-
-            if (game.Player == game.GetPlayer(Game.Who.Player1))
-            {
-                pictureBox1.Visible = true;
-                flowLayoutPanel1.Enabled = true;
-            }
-            if (game.Player == game.GetPlayer(Game.Who.Player2))
-            {
-                pictureBox2.Visible = true;
-                flowLayoutPanel2.Enabled = true;
-            }
-        }
+      
 
         public void SpawnOnMove(int position)
         {
@@ -223,12 +192,7 @@ namespace DiCastSim
                 if (i == 0 || i == 12) item = Items.Castle;
                 else if (i == 6 || i == 18) item = Items.Portal;
                 else item = CreateRandomItem();
-
                 var x = CreateItem(item);
-
-                if (i == 0) ((CastleItem)x).Owner = game.GetPlayer(Game.Who.Player1);
-                if (i == 12) ((CastleItem)x).Owner = game.GetPlayer(Game.Who.Player2);
-
                 ((BaseItem)x).Index = i;
                 Controls.Add(x);
                 Move(x, i);
@@ -289,7 +253,7 @@ namespace DiCastSim
                                 AddDice(CurrentSprite, true);
                             }
 
-                            UpdateStatus();
+                            UpdateScreenItems();
 
                             if (x1.Index % 6 != 0) Controls.Remove(control);
 
@@ -300,8 +264,22 @@ namespace DiCastSim
             }
         }
 
-        private void UpdateStatus()
+        private void UpdateScreenItems()
         {
+            pictureBox2.Visible = pictureBox1.Visible = false;
+            flowLayoutPanel1.Enabled = flowLayoutPanel2.Enabled = false;
+
+            if (game.Player == game.GetPlayer(Game.Who.Player1))
+            {
+                pictureBox1.Visible = true;
+                flowLayoutPanel1.Enabled = true;
+            }
+            if (game.Player == game.GetPlayer(Game.Who.Player2))
+            {
+                pictureBox2.Visible = true;
+                flowLayoutPanel2.Enabled = true;
+            }
+
             playerStatus1.Player = game.GetPlayer(Game.Who.Player1);
             playerStatus2.Player = game.GetPlayer(Game.Who.Player2);
         }
@@ -309,7 +287,7 @@ namespace DiCastSim
         private void button2_Click(object sender, EventArgs e)
         {
             StartGame(Game.Who.Player1);
-            UpdateStatus();
+            UpdateScreenItems();
         }
 
         private void Mov(int move, PlayerSprit item)
