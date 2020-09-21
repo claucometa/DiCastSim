@@ -1,7 +1,4 @@
-﻿using DiCastSim.Core.Enums;
-using System.Collections.Generic;
-
-namespace DiCastSim.Core.Models
+﻿namespace DiCastSim.Core.Models
 {
     public class Player
     {

@@ -9,7 +9,7 @@ namespace DiCastSim.Core.Models
     {
         public List<Dice> x = new List<Dice>();
         readonly DiceGenerator dc;
-        Player player;
+        readonly Player player;
 
         public PlayerHand(Player player)
         {

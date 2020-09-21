@@ -11,7 +11,6 @@ namespace DiCastSim.Core.Models
 
         public PlayerSpecialDices()
         {
-            //rc = IOC.Resolve<RandomContext>();
             MountRandomSpecialDiceQueue();
         }
 

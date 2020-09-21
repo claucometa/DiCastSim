@@ -54,8 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppModule.cs" />
-    <Compile Include="IOC.cs" />
+    <Compile Include="IOC\AppModule.cs" />
+    <Compile Include="IOC\IOC.cs" />
     <Compile Include="Models\PlayerHand.cs" />
     <Compile Include="Models\PlayerSpecialDices.cs" />
     <Compile Include="Services\Game.cs" />
