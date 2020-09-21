@@ -65,7 +65,6 @@
     <Compile Include="Services\DiceGenerator.cs" />
     <Compile Include="Enums\Items.cs" />
     <Compile Include="Services\MonsterService.cs" />
-    <Compile Include="Services\PlayerFabric.cs" />
     <Compile Include="Services\RandomContext.cs" />
   </ItemGroup>
   <ItemGroup>

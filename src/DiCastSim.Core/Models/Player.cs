@@ -21,6 +21,20 @@
             Hand = new PlayerHand(this);
         }
 
+        public static Player Build(string name, int init)
+        {
+            return new Player()
+            {
+                Name = name,
+                Coins = 20,
+                Life = 44,
+                Atack = 15,
+                LastPosition = -1,
+                Position = init,
+                InitialPosition = init,
+            };
+        }
+
         public void Stun()
         {
             Turns += 2;

@@ -19,8 +19,8 @@ namespace DiCastSim
         readonly RandomContext rand;
         readonly Game game;
         readonly MonsterService monsterS;
-        Player player1 => game.GetPlayer(Game.Who.Player1);
-        Player player2 => game.GetPlayer(Game.Who.Player2);
+        Player Player1 => game.GetPlayer(Game.Who.Player1);
+        Player Player2 => game.GetPlayer(Game.Who.Player2);
 
         public Form1()
         {
@@ -28,6 +28,12 @@ namespace DiCastSim
             game = IOC.Resolve<Game>();
             rand = IOC.Resolve<RandomContext>();
             monsterS = IOC.Resolve<MonsterService>();
+            game.DiceAdded += Game_DiceAdded;
+        }
+
+        private void Game_DiceAdded(object sender, Dice dice)
+        {
+            AddDice(CurrentSprite, dice);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -41,13 +47,10 @@ namespace DiCastSim
 
             game.Start(who);
 
-            PlayerTwoInit();
+            PlayerTwoInit(); // Has to come first, otherwise, bug! LOL
             PlayerOneInit();
-            
-            if (who == Game.Who.Player1)
-                AddDice(sprite1);
-            else
-                AddDice(sprite2);
+
+            game.AddDice();
 
             Controls.Remove(sprite1);
             Controls.Remove(sprite2);
@@ -62,45 +65,29 @@ namespace DiCastSim
         {
             sprite1 = new PlayerSprit
             {
-                deck = flowLayoutPanel1,
+                Deck = flowLayoutPanel1,
                 BackgroundImage = Properties.Resources.superhero1
             };
-            sprite1.deck.Controls.Clear();
-            foreach (var item in player1.Hand) AddDice(sprite1, item);
-            player1.GoHome();
-            Mov(0, sprite1);
+            foreach (var item in Player1.Hand) AddDice(sprite1, item);
+            Mov(Player1.Position, sprite1);
         }
 
         private void PlayerTwoInit()
         {
             sprite2 = new PlayerSprit
             {
-                deck = flowLayoutPanel2,
+                Deck = flowLayoutPanel2,
                 BackgroundImage = Properties.Resources.superhero2
             };
-            sprite2.deck.Controls.Clear();
-            foreach (var item in player2.Hand) AddDice(sprite2, item);
-            player2.GoHome();
-            Mov(12, sprite2);
+            foreach (var item in Player2.Hand) AddDice(sprite2, item);
+            Mov(Player2.Position, sprite2);
         }
 
         private void AddDice(PlayerSprit pv, Dice dice)
         {
             var d = new DiceView(dice);
             d.Clicked += Dice_Clicked;
-            pv.deck.Controls.Add(d);
-        }
-
-        private void AddDice(PlayerSprit pv, bool forceNumber = false)
-        {
-            if (forceNumber)
-                game.Player.Hand.GetNumberDice();
-            else
-                game.Player.Hand.GetNextDice();
-
-            var dice = game.Player.Hand.Last();
-
-            AddDice(pv, dice);
+            pv.Deck.Controls.Add(d);
         }
 
         private void Dice_Clicked(object sender, EventArgs e)
@@ -131,7 +118,7 @@ namespace DiCastSim
                         MessageBox.Show("You lose");
                         game.Player.Life -= monsterS.Atack;
                     }
-                    
+
                     game.Hunting = false;
                     huntMonster1.Visible = game.Hunting;
                 }
@@ -164,15 +151,14 @@ namespace DiCastSim
                 }
             }
 
-            CurrentSprite.deck.Controls.Remove(obj);
+            CurrentSprite.Deck.Controls.Remove(obj);
 
             if (!game.Hunting) game.SwitchPlayers();
 
             UpdateScreenItems();
-            AddDice(CurrentSprite);
-        }
 
-      
+            game.AddDice();
+        }
 
         public void SpawnOnMove(int position)
         {
@@ -234,15 +220,15 @@ namespace DiCastSim
                                 huntMonster1.Visible = true;
                                 huntMonster1.SetDices(rand.Get(0, 2) == 1 ? 5 : 4);
                                 game.Hunting = true;
-                                AddDice(CurrentSprite, true);
+                                game.AddDice(true);
                             }
 
                             if (x1 is MonsterTwoItem)
                             {
                                 huntMonster1.Visible = true;
                                 huntMonster1.SetDices(rand.Get(0, 2) == 1 ? 3 : 2);
-                                game.Hunting = true;
-                                AddDice(CurrentSprite, true);
+                                game.Hunting = true;                                
+                                game.AddDice(true);
                             }
 
                             if (x1 is MonsterThreeItem)
@@ -250,7 +236,7 @@ namespace DiCastSim
                                 huntMonster1.Visible = true;
                                 huntMonster1.SetDices(1);
                                 game.Hunting = true;
-                                AddDice(CurrentSprite, true);
+                                game.AddDice(true);
                             }
 
                             UpdateScreenItems();
@@ -269,19 +255,19 @@ namespace DiCastSim
             pictureBox2.Visible = pictureBox1.Visible = false;
             flowLayoutPanel1.Enabled = flowLayoutPanel2.Enabled = false;
 
-            if (game.Player == game.GetPlayer(Game.Who.Player1))
+            if (game.PlayerTurn == Game.Who.Player1)
             {
                 pictureBox1.Visible = true;
                 flowLayoutPanel1.Enabled = true;
             }
-            if (game.Player == game.GetPlayer(Game.Who.Player2))
+            if (game.PlayerTurn == Game.Who.Player2)
             {
                 pictureBox2.Visible = true;
                 flowLayoutPanel2.Enabled = true;
             }
 
-            playerStatus1.Player = game.GetPlayer(Game.Who.Player1);
-            playerStatus2.Player = game.GetPlayer(Game.Who.Player2);
+            playerStatus1.Player = Player1;
+            playerStatus2.Player = Player2;
         }
 
         private void button2_Click(object sender, EventArgs e)
