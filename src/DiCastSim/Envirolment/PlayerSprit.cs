@@ -1,9 +1,11 @@
-﻿using System.Windows.Forms;
+﻿using DiCastSim.Core.Models;
+using System.Windows.Forms;
 
 namespace DiCastSim
 {
     public partial class PlayerSprit : UserControl
     {
+        public Player Player;
         public FlowLayoutPanel _deck;
         public FlowLayoutPanel Deck {
             set
@@ -14,10 +16,11 @@ namespace DiCastSim
             get => _deck;
         }
 
-        public PlayerSprit()
+        public PlayerSprit(Player player)
         {
             InitializeComponent();
             this.Height = this.Width = 64;
+            Player = player;
         }
     }
 }

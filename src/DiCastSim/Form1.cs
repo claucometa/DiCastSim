@@ -13,14 +13,35 @@ namespace DiCastSim
 {
     public partial class Form1 : Form
     {
-        PlayerSprit sprite1, sprite2;
-        PlayerSprit CurrentSprite => game.PlayerTurn == Game.Who.Player1 ? sprite1 : sprite2;
-        readonly LinkItem linkedItem = new LinkItem();
+        private PlayerSprit _sprite1;
+        PlayerSprit Sprite1
+        {
+            get
+            {
+                if (_sprite1 == null)
+                    _sprite1 = CreateSprite(flowLayoutPanel1, Properties.Resources.superhero1, Player1);
+                return _sprite1;
+            }
+        }
+
+        private PlayerSprit _sprite2;
+        PlayerSprit Sprite2
+        {
+            get
+            {
+                if (_sprite2 == null)
+                    _sprite2 = CreateSprite(flowLayoutPanel2, Properties.Resources.superhero2, Player2);
+                return _sprite2;
+            }
+        }
+
+        PlayerSprit CurrentSprite => game.PlayerTurn == Game.Who.Player1 ? Sprite1 : Sprite2;
+        Player Player1 => game.GetPlayer(Game.Who.Player1);
+        Player Player2 => game.GetPlayer(Game.Who.Player2);
+        readonly Inventario inventario = new Inventario();
         readonly RandomContext rand;
         readonly Game game;
         readonly MonsterService monsterS;
-        Player Player1 => game.GetPlayer(Game.Who.Player1);
-        Player Player2 => game.GetPlayer(Game.Who.Player2);
 
         public Form1()
         {
@@ -44,43 +65,29 @@ namespace DiCastSim
         private void StartGame(Game.Who who)
         {
             SpawnInitialItems();
-
-            game.Start(who);
-
-            PlayerTwoInit(); // Has to come first, otherwise, bug! LOL
-            PlayerOneInit();
-
-            game.AddDice();
-
-            Controls.Remove(sprite1);
-            Controls.Remove(sprite2);
-            Controls.Add(sprite1);
-            Controls.Add(sprite2);
-            sprite1.BringToFront();
-            sprite2.BringToFront();
+            game.Start(who);            
+            SetPlayer(Sprite1);
+            SetPlayer(Sprite2);
             UpdateScreenItems();
+            game.AddDice();
         }
 
-        private void PlayerOneInit()
+        private PlayerSprit CreateSprite(FlowLayoutPanel panel, Image img, Player player)
         {
-            sprite1 = new PlayerSprit
+            return new PlayerSprit(player)
             {
-                Deck = flowLayoutPanel1,
-                BackgroundImage = Properties.Resources.superhero1
+                Deck = panel,
+                BackgroundImage = img
             };
-            foreach (var item in Player1.Hand) AddDice(sprite1, item);
-            Mov(Player1.Position, sprite1);
         }
 
-        private void PlayerTwoInit()
+        private void SetPlayer(PlayerSprit sprite)
         {
-            sprite2 = new PlayerSprit
-            {
-                Deck = flowLayoutPanel2,
-                BackgroundImage = Properties.Resources.superhero2
-            };
-            foreach (var item in Player2.Hand) AddDice(sprite2, item);
-            Mov(Player2.Position, sprite2);
+            foreach (var dice in sprite.Player.Hand) AddDice(sprite, dice);
+            MoveSprite(0, sprite);
+            Controls.Remove(sprite);
+            Controls.Add(sprite);
+            sprite.BringToFront();
         }
 
         private void AddDice(PlayerSprit pv, Dice dice)
@@ -95,8 +102,8 @@ namespace DiCastSim
             var obj = (DiceView)sender;
 
             // Avoid click out of turn
-            if (obj.Parent == flowLayoutPanel1 && CurrentSprite != sprite1) return;
-            if (obj.Parent == flowLayoutPanel2 && CurrentSprite != sprite2) return;
+            if (obj.Parent == flowLayoutPanel1 && CurrentSprite != Sprite1) return;
+            if (obj.Parent == flowLayoutPanel2 && CurrentSprite != Sprite2) return;
 
             var diceFace = obj.ThrowDice();
 
@@ -125,7 +132,7 @@ namespace DiCastSim
                 else
                 {
                     button1.Text = diceFace.ToString();
-                    Mov(diceFace.Value, CurrentSprite);
+                    MoveSprite(diceFace.Value, CurrentSprite);
                     DoAction();
                 }
             }
@@ -134,7 +141,7 @@ namespace DiCastSim
                 if (obj.SpecialDice == Dice.Home)
                 {
                     game.Player.GoHome();
-                    Mov(0, CurrentSprite);
+                    MoveSprite(0, CurrentSprite);
                     DoAction();
                 }
                 else if (obj.SpecialDice == Dice.SmallPotion)
@@ -166,7 +173,7 @@ namespace DiCastSim
             var x = CreateItem(CreateRandomItem());
             ((BaseItem)x).Index = position;
             Controls.Add(x);
-            Move(x, position);
+            PlaceItem(x, position);
         }
 
         public void SpawnInitialItems()
@@ -181,16 +188,16 @@ namespace DiCastSim
                 var x = CreateItem(item);
                 ((BaseItem)x).Index = i;
                 Controls.Add(x);
-                Move(x, i);
+                PlaceItem(x, i);
             }
         }
 
         private Items CreateRandomItem() => (Items)rand.Get(2, game.TotalItems);
 
         private UserControl CreateItem(Items item) =>
-            (UserControl)Activator.CreateInstance(linkedItem[item]);
+            (UserControl)Activator.CreateInstance(inventario[item]);
 
-        private new void Move(UserControl item, int pos)
+        private void PlaceItem(UserControl item, int pos)
         {
             var sq = board1.GetSquare(pos);
 
@@ -227,7 +234,7 @@ namespace DiCastSim
                             {
                                 huntMonster1.Visible = true;
                                 huntMonster1.SetDices(rand.Get(0, 2) == 1 ? 3 : 2);
-                                game.Hunting = true;                                
+                                game.Hunting = true;
                                 game.AddDice(true);
                             }
 
@@ -276,19 +283,19 @@ namespace DiCastSim
             UpdateScreenItems();
         }
 
-        private void Mov(int move, PlayerSprit item)
+        private void MoveSprite(int move, PlayerSprit item)
         {
-            game.Player.Position += move;
-            if (game.Player.LastPosition >= 0)
+            item.Player.Position += move;
+            if (item.Player.LastPosition >= 0)
             {
-                if (!new int[] { 0, 12, 18 }.Contains(game.Player.LastPosition % 24))
+                if (!new int[] { 0, 12, 18 }.Contains(item.Player.LastPosition % 24))
                 {
-                    SpawnOnMove(game.Player.LastPosition);
+                    SpawnOnMove(item.Player.LastPosition);
                 }
             }
-            game.Player.LastPosition = game.Player.Position;
+            item.Player.LastPosition = item.Player.Position;
 
-            Move(item, game.Player.Position);
+            PlaceItem(item, item.Player.Position);
         }
     }
 }

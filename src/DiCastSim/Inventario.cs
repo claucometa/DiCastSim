@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace DiCastSim
 {
-    class LinkItem : Dictionary<Items, Type>
+    class Inventario : Dictionary<Items, Type>
     {
-        public LinkItem()
+        public Inventario()
         {
            Add(Items.Nothing, typeof(NothingItem));
            Add(Items.Castle, typeof(CastleItem));
