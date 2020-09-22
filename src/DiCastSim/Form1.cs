@@ -36,10 +36,10 @@ namespace DiCastSim
         }
 
         PlayerSprit CurrentSprite => game.PlayerTurn == Game.Who.Player1 ? Sprite1 : Sprite2;
-        
+
         Player Player1 => game.GetPlayer(Game.Who.Player1);
         Player Player2 => game.GetPlayer(Game.Who.Player2);
-        
+
         readonly Inventario inventario = new Inventario();
         readonly Randomizer rand;
         readonly Game game;
@@ -66,12 +66,18 @@ namespace DiCastSim
 
         private void StartGame(Game.Who who)
         {
+            game.Start(who);
+            SetScreemItems();
+            game.AddDice();
+        }
+
+        private void SetScreemItems()
+        {
+            _sprite2 = _sprite1 = null;
             SpawnInitialItems();
-            game.Start(who);            
             SetPlayer(Sprite1);
             SetPlayer(Sprite2);
             UpdateScreenItems();
-            game.AddDice();
         }
 
         private PlayerSprit CreateSprite(FlowLayoutPanel panel, Image img, Player player)
@@ -282,7 +288,9 @@ namespace DiCastSim
 
         private void button2_Click(object sender, EventArgs e)
         {
-            StartGame(Game.Who.Player1);
+            Game.Who who = radioButton1.Checked ? Game.Who.Player1 : Game.Who.Player2;
+            if (radioButton3.Checked) who = (Game.Who)rand.Get(0, 2);
+            StartGame(who);
             UpdateScreenItems();
         }
 
