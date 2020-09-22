@@ -54,7 +54,7 @@ namespace DiCastSim
             game.DiceAdded += Game_DiceAdded;
         }
 
-        private void Game_DiceAdded(object sender, Dice dice)
+        private void Game_DiceAdded(object sender, DiceInHand dice)
         {
             AddDice(CurrentSprite, dice);
         }
@@ -98,14 +98,14 @@ namespace DiCastSim
             sprite.BringToFront();
         }
 
-        private void AddDice(PlayerSprit pv, Dice dice)
+        private void AddDice(PlayerSprit pv, DiceInHand dice)
         {
             var d = new DiceView(dice);
             d.Clicked += Dice_Clicked;
             pv.Deck.Controls.Add(d);
         }
 
-        private void Dice_Clicked(object sender, EventArgs e)
+        private void Dice_Clicked(object sender, DiceInHand e)
         {
             var obj = (DiceView)sender;
 
@@ -146,27 +146,28 @@ namespace DiCastSim
             }
             else
             {
-                if (obj.SpecialDice == Dice.Home)
+                if (obj.SpecialDice.Dice == Dice.Home)
                 {
                     game.Player.GoHome();
                     MoveSprite(0, CurrentSprite);
                     DoAction();
                 }
-                else if (obj.SpecialDice == Dice.SmallPotion)
+                else if (obj.SpecialDice.Dice == Dice.SmallPotion)
                 {
                     game.Player.AddLife(7);
                 }
-                else if (obj.SpecialDice == Dice.BigPotion)
+                else if (obj.SpecialDice.Dice == Dice.BigPotion)
                 {
                     game.Player.AddLife(15);
                 }
-                else if (obj.SpecialDice == Dice.Stunt)
+                else if (obj.SpecialDice.Dice == Dice.Stunt)
                 {
                     game.Player.Stun();
                 }
             }
 
             CurrentSprite.Deck.Controls.Remove(obj);
+            game.Player.Hand.Remove(e);
 
             if (!game.Hunting) game.SwitchPlayers();
 

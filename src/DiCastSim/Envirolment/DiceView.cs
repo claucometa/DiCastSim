@@ -1,5 +1,5 @@
 ﻿using DiCastSim.Core;
-using DiCastSim.Core.Enums;
+using DiCastSim.Core.Models;
 using DiCastSim.Core.Services;
 using System;
 using System.Windows.Forms;
@@ -8,7 +8,7 @@ namespace DiCastSim.Envirolment
 {
     public partial class DiceView : UserControl
     {
-        public Dice Tipo { get; set; }
+        public DiceInHand Tipo { get; set; }
         public readonly DiceGenerator dc;
 
         public int? ThrowDice()
@@ -19,30 +19,30 @@ namespace DiCastSim.Envirolment
             return Value;
         }
 
-        public Dice SpecialDice;
+        public DiceInHand SpecialDice;
 
         private int? Value
         {
             get
             {
                 SpecialDice = Tipo;
-                return dc.EvaluateDice(Tipo);
+                return dc.EvaluateDice(Tipo.Dice);
             }
         }
 
-        public DiceView(Dice tipo)
+        public DiceView(DiceInHand tipo)
         {
             InitializeComponent();
             Tipo = tipo;
-            label1.Text = Tipo.ToString();
+            label1.Text = Tipo.Dice.ToString();
             dc = IOC.Resolve<DiceGenerator>();
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
-            Clicked?.Invoke(this, e);
+            Clicked?.Invoke(this, Tipo);
         }
 
-        public event EventHandler Clicked;
+        public event EventHandler<DiceInHand> Clicked;
     }
 }

@@ -117,7 +117,7 @@
             // 
             this.huntMonster1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.huntMonster1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.huntMonster1.Location = new System.Drawing.Point(386, 205);
+            this.huntMonster1.Location = new System.Drawing.Point(385, 205);
             this.huntMonster1.Name = "huntMonster1";
             this.huntMonster1.Size = new System.Drawing.Size(362, 150);
             this.huntMonster1.TabIndex = 20;

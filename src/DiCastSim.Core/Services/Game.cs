@@ -1,7 +1,6 @@
 ﻿using DiCastSim.Core.Enums;
 using DiCastSim.Core.Models;
 using System;
-using System.Linq;
 
 namespace DiCastSim.Core
 {
@@ -11,7 +10,7 @@ namespace DiCastSim.Core
         public bool Hunting;
         public Player Player => p1.Turns > 0 ? p1 : p2;
         private Player p1, p2;
-        public event EventHandler<Dice> DiceAdded;
+        public event EventHandler<DiceInHand> DiceAdded;
 
         public Player GetPlayer(Who who) => who == Who.Player1 ? p1 : p2;
 
@@ -50,9 +49,8 @@ namespace DiCastSim.Core
 
         public void AddDice(bool forceNumber = false)
         {
-            var dice = Player.Hand.AddNextDice(forceNumber ? PlayerHand.DiceType.NumberOnly : PlayerHand.DiceType.Any);
-            if(dice.HasValue)
-                DiceAdded?.Invoke(this, dice.Value);
+            var dice = Player.Hand.TakeNextDice(forceNumber ? PlayerHand.DiceType.NumberOnly : PlayerHand.DiceType.Any);
+            if(dice != null) DiceAdded?.Invoke(this, dice);
         }
     }
 }

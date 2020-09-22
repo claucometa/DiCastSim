@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DiCastSim.Core.Models
 {
-    public class PlayerHand : List<Dice>
+    public class PlayerHand : List<DiceInHand>
     {
         readonly DiceGenerator dc;
         readonly Player player;
@@ -14,8 +14,9 @@ namespace DiCastSim.Core.Models
         {
             this.player = player;
             dc = IOC.Resolve<DiceGenerator>();
-            Add(dc.Get(player));
-            Add(dc.Get(player));
+
+            Add(new DiceInHand(Count, dc.Get(player)));
+            Add(new DiceInHand(Count, dc.Get(player)));
         }
 
         public enum DiceType
@@ -24,36 +25,37 @@ namespace DiCastSim.Core.Models
             Any,
         }
 
-        public Dice? AddNextDice(DiceType type)
+        /// <summary>
+        /// Retorna qualquer dado, numérico ou especial
+        /// Se o jogador só tiver dados especiais, obrigatoriamente retorna um númerico
+        /// </summary>
+        /// <returns></returns>
+        public DiceInHand TakeNextDice(DiceType type)
         {
-            var dice = type == DiceType.NumberOnly ?
-                AddNumbericDice() : AddAnyDice();
+            if (Count == 5) return null;
 
-            if (dice.HasValue) Add(dice.Value);
+            var diceFace = type == DiceType.NumberOnly ?
+                NumbericDice : AddAnyDice;
+
+            var dice = new DiceInHand(Count, diceFace);
+
+            Add(dice);
 
             return dice;
         }
 
-        private Dice? AddNumbericDice()
+        private Dice NumbericDice => dc.Get(player, true);
+
+        private Dice AddAnyDice
         {
-            if (Count == 5) return null;
-            return dc.Get(player, true);
-        }
+            get
+            {
+                var anyNumber = this.Any(t =>
+                    (t.Dice >= Dice.One && t.Dice <= Dice.High) ||
+                    (t.Dice == Dice.MinusOne || t.Dice == Dice.MinusRandom));
 
-        private Dice? AddAnyDice()
-        {
-            if (Count == 5) return null; 
-
-            // There is some number
-            if (this.Any(t => t >= Dice.One && t <= Dice.High))
-                return dc.Get(player);
-
-            // There is some number
-            if (this.Any(t => t == Dice.MinusOne || t == Dice.MinusRandom))
-                return dc.Get(player);
-
-            // There is no number, so force next dice to be a number
-            return dc.Get(player, true);
+                return dc.Get(player, !anyNumber);
+            }
         }
     }
 }
