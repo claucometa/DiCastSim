@@ -2,7 +2,7 @@
 
 namespace DiCastSim.Core.Services
 {
-    public class RandomContext
+    public class Randomizer
     {
         private readonly Random r = new Random();
 

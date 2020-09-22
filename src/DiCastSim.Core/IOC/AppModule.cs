@@ -9,7 +9,7 @@ namespace DiCastSim.Core
         {
             builder.RegisterType<Game>().SingleInstance();
             builder.RegisterType<DiceGenerator>().SingleInstance();
-            builder.RegisterType<RandomContext>().SingleInstance();
+            builder.RegisterType<Randomizer>().SingleInstance();
             builder.RegisterType<MonsterService>().SingleInstance();
         }
     }

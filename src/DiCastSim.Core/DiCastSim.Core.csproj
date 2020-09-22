@@ -65,7 +65,7 @@
     <Compile Include="Services\DiceGenerator.cs" />
     <Compile Include="Enums\Items.cs" />
     <Compile Include="Services\MonsterService.cs" />
-    <Compile Include="Services\RandomContext.cs" />
+    <Compile Include="Services\Randomizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

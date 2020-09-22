@@ -7,7 +7,7 @@ namespace DiCastSim.Core.Models
 {
     public class PlayerSpecialDices : Queue<Dice>
     {
-        readonly RandomContext rc = new RandomContext();
+        readonly Randomizer rc = new Randomizer();
 
         public PlayerSpecialDices()
         {

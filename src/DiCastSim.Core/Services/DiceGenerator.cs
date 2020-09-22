@@ -5,12 +5,12 @@ namespace DiCastSim.Core.Services
 {
     public class DiceGenerator
     {
-        readonly RandomContext rand;        
+        readonly Randomizer rand;        
         Dice NumberedDice => (Dice)rand.Get(0, 10);
 
         public DiceGenerator()
         {
-            rand = IOC.Resolve<RandomContext>();
+            rand = IOC.Resolve<Randomizer>();
         }
 
         public Dice Get(Player player, bool forceNumbers = false)

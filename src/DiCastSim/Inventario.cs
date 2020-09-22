@@ -2,11 +2,15 @@
 using DiCastSim.Objects;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace DiCastSim
 {
     class Inventario : Dictionary<Items, Type>
-    {
+    {       
+        public UserControl CreateItem(Items item) =>
+            (UserControl)Activator.CreateInstance(this[item]);
+
         public Inventario()
         {
            Add(Items.Nothing, typeof(NothingItem));

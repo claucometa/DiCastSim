@@ -36,10 +36,12 @@ namespace DiCastSim
         }
 
         PlayerSprit CurrentSprite => game.PlayerTurn == Game.Who.Player1 ? Sprite1 : Sprite2;
+        
         Player Player1 => game.GetPlayer(Game.Who.Player1);
         Player Player2 => game.GetPlayer(Game.Who.Player2);
+        
         readonly Inventario inventario = new Inventario();
-        readonly RandomContext rand;
+        readonly Randomizer rand;
         readonly Game game;
         readonly MonsterService monsterS;
 
@@ -47,7 +49,7 @@ namespace DiCastSim
         {
             InitializeComponent();
             game = IOC.Resolve<Game>();
-            rand = IOC.Resolve<RandomContext>();
+            rand = IOC.Resolve<Randomizer>();
             monsterS = IOC.Resolve<MonsterService>();
             game.DiceAdded += Game_DiceAdded;
         }
@@ -170,7 +172,7 @@ namespace DiCastSim
         public void SpawnOnMove(int position)
         {
             if (position % 6 == 0) return;
-            var x = CreateItem(CreateRandomItem());
+            var x = inventario.CreateItem(GetRandomItem);
             ((BaseItem)x).Index = position;
             Controls.Add(x);
             PlaceItem(x, position);
@@ -178,24 +180,25 @@ namespace DiCastSim
 
         public void SpawnInitialItems()
         {
-            Items item;
-
             for (int i = 0; i < 24; i++)
             {
-                if (i == 0 || i == 12) item = Items.Castle;
-                else if (i == 6 || i == 18) item = Items.Portal;
-                else item = CreateRandomItem();
-                var x = CreateItem(item);
+                var x = inventario.CreateItem(CreateAllItems(i));
                 ((BaseItem)x).Index = i;
                 Controls.Add(x);
                 PlaceItem(x, i);
             }
         }
 
-        private Items CreateRandomItem() => (Items)rand.Get(2, game.TotalItems);
+        private Items CreateAllItems(int i)
+        {
+            Items item;
+            if (i == 0 || i == 12) item = Items.Castle;
+            else if (i == 6 || i == 18) item = Items.Portal;
+            else item = GetRandomItem;
+            return item;
+        }
 
-        private UserControl CreateItem(Items item) =>
-            (UserControl)Activator.CreateInstance(inventario[item]);
+        private Items GetRandomItem => (Items)rand.Get(2, game.TotalItems);
 
         private void PlaceItem(UserControl item, int pos)
         {
