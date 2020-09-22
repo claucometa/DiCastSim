@@ -21,8 +21,8 @@ namespace DiCastSim.Core.Services
             if (player.SpecialDices.Count == 0)
                 return NumberedDice;
 
-            // One third possibility to get a special card
-            return rand.Get(0, 3) == 0 ?
+            // A fourth's possibility to get a special card
+            return rand.Get(0, 4) == 0 ?
                 player.SpecialDices.Dequeue() : NumberedDice;
         }
 

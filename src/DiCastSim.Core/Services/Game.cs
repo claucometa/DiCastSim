@@ -50,12 +50,9 @@ namespace DiCastSim.Core
 
         public void AddDice(bool forceNumber = false)
         {
-            if (forceNumber)
-                Player.Hand.GetNumberDice();
-            else
-                Player.Hand.GetNextDice();
-
-            DiceAdded?.Invoke(this, Player.Hand.Last());
+            var dice = Player.Hand.AddNextDice(forceNumber ? PlayerHand.DiceType.NumberOnly : PlayerHand.DiceType.Any);
+            if(dice.HasValue)
+                DiceAdded?.Invoke(this, dice.Value);
         }
     }
 }

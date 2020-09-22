@@ -16,7 +16,7 @@ namespace DiCastSim.Core.Services
             return monsterNumbers.Contains(v);
         }
 
-        public int[] GetMonterDices(int total)
+        public int[] GetDices(int total)
         {
             if (total == 1)
             {

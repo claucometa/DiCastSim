@@ -18,32 +18,42 @@ namespace DiCastSim.Core.Models
             Add(dc.Get(player));
         }
 
-        public void GetNumberDice()
+        public enum DiceType
         {
-            if (Count == 5) return;
-            Add(dc.Get(player, true));
+            NumberOnly,
+            Any,
         }
 
-        public void GetNextDice()
+        public Dice? AddNextDice(DiceType type)
         {
-            if (Count == 5) return;
+            var dice = type == DiceType.NumberOnly ?
+                AddNumbericDice() : AddAnyDice();
+
+            if (dice.HasValue) Add(dice.Value);
+
+            return dice;
+        }
+
+        private Dice? AddNumbericDice()
+        {
+            if (Count == 5) return null;
+            return dc.Get(player, true);
+        }
+
+        private Dice? AddAnyDice()
+        {
+            if (Count == 5) return null; 
 
             // There is some number
             if (this.Any(t => t >= Dice.One && t <= Dice.High))
-            {
-                Add(dc.Get(player));
-                return;
-            }
+                return dc.Get(player);
 
             // There is some number
             if (this.Any(t => t == Dice.MinusOne || t == Dice.MinusRandom))
-            {
-                Add(dc.Get(player));
-                return;
-            }
+                return dc.Get(player);
 
             // There is no number, so force next dice to be a number
-            Add(dc.Get(player, true));
+            return dc.Get(player, true);
         }
     }
 }

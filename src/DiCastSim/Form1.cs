@@ -234,7 +234,7 @@ namespace DiCastSim
                             if (x1 is MonsterOneItem)
                             {
                                 huntMonster1.Visible = true;
-                                huntMonster1.SetDices(rand.Get(0, 2) == 1 ? 5 : 4);
+                                huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 5 : 4);
                                 game.Hunting = true;
                                 game.AddDice(true);
                             }
@@ -242,7 +242,7 @@ namespace DiCastSim
                             if (x1 is MonsterTwoItem)
                             {
                                 huntMonster1.Visible = true;
-                                huntMonster1.SetDices(rand.Get(0, 2) == 1 ? 3 : 2);
+                                huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 3 : 2);
                                 game.Hunting = true;
                                 game.AddDice(true);
                             }
@@ -250,7 +250,7 @@ namespace DiCastSim
                             if (x1 is MonsterThreeItem)
                             {
                                 huntMonster1.Visible = true;
-                                huntMonster1.SetDices(1);
+                                huntMonster1.Dices = monsterS.GetDices(1);
                                 game.Hunting = true;
                                 game.AddDice(true);
                             }

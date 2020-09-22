@@ -7,21 +7,21 @@ using System.Windows.Forms;
 namespace DiCastSim
 {
     public partial class HuntMonter : UserControl
-    {
-        readonly MonsterService ms;
-
+    {        
         public HuntMonter()
         {
-            InitializeComponent();
-            ms = IOC.Resolve<MonsterService>();
+            InitializeComponent();            
         }
 
-        public void SetDices(int total)
+        public int[] Dices
         {
-            flowLayoutPanel1.Controls.Clear();
-            foreach (var item in ms.GetMonterDices(total))
+            set
             {
-                flowLayoutPanel1.Controls.Add(new DiceView((Dice)item));
+                flowLayoutPanel1.Controls.Clear();
+                foreach (var item in value)
+                {
+                    flowLayoutPanel1.Controls.Add(new DiceView((Dice)item));
+                }
             }
         }
     }

@@ -13,7 +13,7 @@ namespace DiCastSim.Tests
             MonsterService x = new MonsterService();
             for (int i = 0; i < 100; i++)
             {
-                var result = x.GetMonterDices(5);
+                var result = x.GetDices(5);
                 var monsterNumbers = result.Distinct().ToArray();
                 Assert.AreEqual(result.Length, monsterNumbers.Length);
             }
