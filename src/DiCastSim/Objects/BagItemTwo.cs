@@ -1,6 +1,6 @@
 ﻿namespace DiCastSim.Objects
 {
-    class BagItem : BaseItem
+    class BagItemTwo : BaseItem
     {
         public override string Do()
         {
@@ -9,7 +9,7 @@
             return $"{game.Player.Name} got a bag";
         }
 
-        public BagItem()
+        public BagItemTwo()
         {
             Img = Properties.Resources.bag;
         }

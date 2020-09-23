@@ -1,6 +1,4 @@
-﻿using DiCastSim.Core;
-
-namespace DiCastSim.Objects
+﻿namespace DiCastSim.Objects
 {
     class MonsterTwoItem : BaseItem
     {
@@ -14,18 +12,6 @@ namespace DiCastSim.Objects
         public MonsterTwoItem()
         {
             Img = Properties.Resources.monsterTwo;
-        }
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // MonsterTwoItem
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Name = "MonsterTwoItem";
-            this.ResumeLayout(false);
-
         }
     }
 }

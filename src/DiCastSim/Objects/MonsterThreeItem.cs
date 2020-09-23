@@ -1,6 +1,4 @@
-﻿using DiCastSim.Core;
-
-namespace DiCastSim.Objects
+﻿namespace DiCastSim.Objects
 {
     class MonsterThreeItem : BaseItem
     {

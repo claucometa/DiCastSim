@@ -25,6 +25,12 @@
         Shuffle,
         Atack,
         Quick_Atack,
+        DrawTwoDices,
+        LockEven,
+        LockOdd,
         Key,
+        BrokenShield,
+        Shield,
+        GoldenShield,
     }
 }

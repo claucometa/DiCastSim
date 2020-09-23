@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace DiCastSim
@@ -81,7 +82,7 @@ namespace DiCastSim
         {
             game.Start(who);
             SetScreemItems();
-            //game.TakeDice(Dice.Shuffle);
+            //game.TakeDice(Dice.Shuffle); // DEBUG
             game.AddDice();
         }
 
@@ -160,15 +161,23 @@ namespace DiCastSim
             }
             else
             {
-                if (obj.SpecialDice.Dice == Dice.Shuffle)
+                if (obj.SpecialDice.Dice == Dice.LockEven)
+                {
+                }
+                else if (obj.SpecialDice.Dice == Dice.LockOdd)
+                {
+                }
+                else if (obj.SpecialDice.Dice == Dice.DrawTwoDices)
+                {
+                }
+                else if (obj.SpecialDice.Dice == Dice.Shuffle)
                 {
                     game.Player.Turns++;
                     game.Player.Hand.Shuffle();
                     for (int i = 0; i < game.Player.Hand.Count; i++)
                     {
-                        ((DiceView) CurrentSprite.Deck.Controls[i]).Change(game.Player.Hand[i].Dice);
+                        ((DiceView)CurrentSprite.Deck.Controls[i]).Change(game.Player.Hand[i].Dice);
                     }
-
                 }
                 else if (obj.SpecialDice.Dice == Dice.Home)
                 {
@@ -214,10 +223,11 @@ namespace DiCastSim
             game.AddDice();
         }
 
+        // Increased possibility to get a sword!
         public void SpawnOnMove(int position)
         {
             if (position % 6 == 0) return;
-            var x = inventario.CreateItem(GetRandomItem);
+            var x = rand.Get(0, 2) == 0 ? inventario.CreateItem(Items.Sword) : inventario.CreateItem(GetRandomItem);
             ((BaseItem)x).Index = position;
             Controls.Add(x);
             PlaceItem(x, position);
@@ -245,7 +255,7 @@ namespace DiCastSim
         }
 
         private Items GetRandomItem => (Items)rand.Get(2, game.TotalItems);
-        //private Items GetRandomItem => Items.Monster1;
+        //private Items GetRandomItem => Items.Monster1; // DEBUG
 
         private void PlaceItem(UserControl item, int pos)
         {
@@ -271,6 +281,39 @@ namespace DiCastSim
                             label1.Text = x1.Do();
 
                             huntMonster1.Visible = false;
+
+                            if (x1 is PortalItem)
+                            {
+                                MoveSprite(12, CurrentSprite);
+                            }
+
+                            if (x1 is BagItem)
+                            {
+                                var x = new Dice[] { Dice.DrawTwoDices, Dice.LockEven, Dice.LockOdd };
+                                var r = rand.Get(0, x.Length);
+                                game.TakeDice(x[r]);
+                            }
+
+                            if (x1 is BagItemTwo)
+                            {
+                                var x = new Dice[] { Dice.Stunt, Dice.Key, Dice.GoldenShield };
+                                var r = rand.Get(0, x.Length);
+                                game.TakeDice(x[r]);
+                            }
+
+                            if (x1 is BookOneItem)
+                            {
+                                // Level up
+                                // Damage the opponent
+                                // Get 20 coin
+                            }
+
+                            if (x1 is BookTwoItem)
+                            {
+                                // Move yourself to any square, but the same you are at
+                                // Move the opponent to any square, but the same you are at
+                                // Thunderbolt
+                            }
 
                             if (x1 is MonsterOneItem)
                             {
@@ -325,6 +368,8 @@ namespace DiCastSim
 
             playerStatus1.Player = Player1;
             playerStatus2.Player = Player2;
+
+            label2.Text = game.Turn.ToString();
         }
 
         private void button2_Click(object sender, EventArgs e)

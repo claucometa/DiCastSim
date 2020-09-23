@@ -1,6 +1,4 @@
-﻿using DiCastSim.Core;
-
-namespace DiCastSim.Objects
+﻿namespace DiCastSim.Objects
 {
     class SpikeTwoItem : BaseItem
     {
@@ -14,18 +12,6 @@ namespace DiCastSim.Objects
         public SpikeTwoItem()
         {
             Img = Properties.Resources.trap2;
-        }
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // SpikeTwoItem
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Name = "SpikeTwoItem";
-            this.ResumeLayout(false);
-
         }
     }
 }

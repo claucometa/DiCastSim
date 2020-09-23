@@ -1,7 +1,4 @@
-﻿
-using DiCastSim.Core;
-
-namespace DiCastSim.Objects
+﻿namespace DiCastSim.Objects
 {
     internal class NothingItem : BaseItem
     {

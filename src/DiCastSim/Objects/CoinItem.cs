@@ -1,6 +1,4 @@
-﻿using DiCastSim.Core;
-
-namespace DiCastSim.Objects
+﻿namespace DiCastSim.Objects
 {
     class CoinItem : BaseItem
     {
@@ -8,7 +6,7 @@ namespace DiCastSim.Objects
         {
             game.Player.Coins += 12;
 
-            return $"{game.Player.Name} earning money";
+            return $"{game.Player.Name} got money";
         }
 
         public CoinItem()

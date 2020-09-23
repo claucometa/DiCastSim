@@ -87,6 +87,9 @@
     <Compile Include="Envirolment\HuntMonter.Designer.cs">
       <DependentUpon>HuntMonter.cs</DependentUpon>
     </Compile>
+    <Compile Include="Objects\BagItemTwo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Objects\BaseItem.cs">
       <SubType>UserControl</SubType>
     </Compile>

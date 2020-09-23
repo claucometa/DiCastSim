@@ -6,6 +6,7 @@ namespace DiCastSim.Core
 {
     public class Game
     {
+        public int Turn = -1;
         public int TotalItems => Enum.GetValues(typeof(Items)).Length;
         public bool Hunting;
         public Player Player => p1.Turns > 0 ? p1 : p2;
@@ -21,12 +22,20 @@ namespace DiCastSim.Core
             if (PlayerTurn == Who.Player1)
             {
                 p1.Turns--;
-                if (p1.Turns == 0) p2.Turns++;
+                if (p1.Turns == 0)
+                {
+                    p2.Turns++;
+                    Turn++;
+                }
             }
             else if (PlayerTurn == Who.Player2)
             {
                 p2.Turns--;
-                if (p2.Turns == 0) p1.Turns++;
+                if (p2.Turns == 0)
+                {
+                    p1.Turns++;
+                    Turn++;
+                }
             }
         }
 
@@ -38,6 +47,8 @@ namespace DiCastSim.Core
 
         public void Start(Who who)
         {
+            Turn = 1;
+
             p1 = Player.Build("Player 1", 24 * 100);
             p2 = Player.Build("Player 2", 12);
 

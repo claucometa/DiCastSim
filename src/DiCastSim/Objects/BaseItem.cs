@@ -1,5 +1,4 @@
-﻿using Autofac;
-using DiCastSim.Core;
+﻿using DiCastSim.Core;
 using System;
 using System.Drawing;
 using System.Windows.Forms;

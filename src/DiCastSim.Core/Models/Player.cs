@@ -1,4 +1,7 @@
-﻿namespace DiCastSim.Core.Models
+﻿using DiCastSim.Core.Services;
+using System.Linq;
+
+namespace DiCastSim.Core.Models
 {
     public class Player
     {
@@ -15,9 +18,11 @@
         public int Turns { get; set; } = 0;
         public PlayerSpecialDices SpecialDices = new PlayerSpecialDices();
         public readonly PlayerHand Hand;
+        Randomizer rand;
 
         public Player()
         {
+            rand = IOC.Resolve<Randomizer>();
             Hand = new PlayerHand(this);
         }
 
@@ -42,6 +47,24 @@
 
         public void AddLife(int v)
         {
+            if (v < 0)
+            {
+                if (Hand.Any(t => t.Dice == Enums.Dice.Shield))
+                {
+                    v = 0;
+                }
+                else if (Hand.Any(t => t.Dice == Enums.Dice.GoldenShield))
+                {
+                    var rest = (int)(Coins / v);
+                    Coins += v * 5;
+                    v += rest;
+                }
+                else if (Hand.Any(t => t.Dice == Enums.Dice.BrokenShield))
+                {
+                    if (rand.Get(0, 2) == 0) v = 0;
+                }
+            }
+
             Life += v;
         }
 
