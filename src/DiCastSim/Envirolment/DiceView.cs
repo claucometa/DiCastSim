@@ -1,4 +1,5 @@
 ﻿using DiCastSim.Core;
+using DiCastSim.Core.Enums;
 using DiCastSim.Core.Models;
 using DiCastSim.Core.Services;
 using System;
@@ -36,11 +37,18 @@ namespace DiCastSim.Envirolment
             Tipo = tipo;
             label1.Text = Tipo.Dice.ToString();
             dc = IOC.Resolve<DiceGenerator>();
+            Enabled = false;
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
             Clicked?.Invoke(this, Tipo);
+        }
+
+        public void Change(Dice face)
+        {
+            Tipo.Dice = face;
+            label1.Text = Tipo.Dice.ToString();
         }
 
         public event EventHandler<DiceInHand> Clicked;

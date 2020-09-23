@@ -5,6 +5,7 @@ using DiCastSim.Core.Services;
 using DiCastSim.Envirolment;
 using DiCastSim.Objects;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,6 +14,8 @@ namespace DiCastSim
 {
     public partial class Form1 : Form
     {
+        readonly Queue<Items> repeatItems = new Queue<Items>();
+
         private PlayerSprit _sprite1;
         PlayerSprit Sprite1
         {
@@ -57,6 +60,16 @@ namespace DiCastSim
         private void Game_DiceAdded(object sender, DiceInHand dice)
         {
             AddDice(CurrentSprite, dice);
+
+            if (game.Hunting)
+                game.Player.Hand.ValidateForHunting();
+            else
+                game.Player.Hand.Validate();
+
+            for (int i = 0; i < game.Player.Hand.Count; i++)
+            {
+                CurrentSprite.Deck.Controls[i].Enabled = game.Player.Hand[i].Enabled;
+            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -68,6 +81,7 @@ namespace DiCastSim
         {
             game.Start(who);
             SetScreemItems();
+            //game.TakeDice(Dice.Shuffle);
             game.AddDice();
         }
 
@@ -119,7 +133,7 @@ namespace DiCastSim
             {
                 if (game.Hunting)
                 {
-                    // Evita numeros negativos
+                    // Handle negative number as positive
                     var x = diceFace.Value < 0 ? diceFace.Value * -1 : diceFace.Value;
 
                     if (monsterS.AtackMonster(x))
@@ -146,14 +160,38 @@ namespace DiCastSim
             }
             else
             {
-                if (obj.SpecialDice.Dice == Dice.Home)
+                if (obj.SpecialDice.Dice == Dice.Shuffle)
+                {
+                    game.Player.Turns++;
+                    game.Player.Hand.Shuffle();
+                    for (int i = 0; i < game.Player.Hand.Count; i++)
+                    {
+                        ((DiceView) CurrentSprite.Deck.Controls[i]).Change(game.Player.Hand[i].Dice);
+                    }
+
+                }
+                else if (obj.SpecialDice.Dice == Dice.Home)
                 {
                     game.Player.GoHome();
                     MoveSprite(0, CurrentSprite);
                     DoAction();
                 }
+                else if (obj.SpecialDice.Dice == Dice.Atack)
+                {
+                    game.Player.AddLife(game.PlayerTurn == Game.Who.Player1 ? -Player1.Atack : -Player2.Atack);
+                }
+                else if (obj.SpecialDice.Dice == Dice.Quick_Atack)
+                {
+                    game.Player.Turns++;
+                    game.Player.AddLife(game.PlayerTurn == Game.Who.Player1 ? -Player1.Atack : -Player2.Atack);
+                }
                 else if (obj.SpecialDice.Dice == Dice.SmallPotion)
                 {
+                    game.Player.AddLife(7);
+                }
+                else if (obj.SpecialDice.Dice == Dice.Quick_SmallPotion)
+                {
+                    game.Player.Turns++;
                     game.Player.AddLife(7);
                 }
                 else if (obj.SpecialDice.Dice == Dice.BigPotion)
@@ -189,23 +227,25 @@ namespace DiCastSim
         {
             for (int i = 0; i < 24; i++)
             {
-                var x = inventario.CreateItem(CreateAllItems(i));
+                var x = inventario.CreateItem(AtPosition(i));
                 ((BaseItem)x).Index = i;
                 Controls.Add(x);
                 PlaceItem(x, i);
             }
         }
 
-        private Items CreateAllItems(int i)
+        private Items AtPosition(int i)
         {
             Items item;
             if (i == 0 || i == 12) item = Items.Castle;
             else if (i == 6 || i == 18) item = Items.Portal;
-            else item = GetRandomItem;
+            else if (i < 12) { item = GetRandomItem; repeatItems.Enqueue(item); }
+            else item = repeatItems.Dequeue();
             return item;
         }
 
         private Items GetRandomItem => (Items)rand.Get(2, game.TotalItems);
+        //private Items GetRandomItem => Items.Monster1;
 
         private void PlaceItem(UserControl item, int pos)
         {

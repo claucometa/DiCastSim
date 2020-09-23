@@ -47,9 +47,15 @@ namespace DiCastSim.Core
                 p2.Turns = 1;
         }
 
+        public void TakeDice(Dice d)
+        {
+            var dice = Player.Hand.TakeDice(d);
+            if (dice != null) DiceAdded?.Invoke(this, dice);
+        }
+
         public void AddDice(bool forceNumber = false)
         {
-            var dice = Player.Hand.TakeNextDice(forceNumber ? PlayerHand.DiceType.NumberOnly : PlayerHand.DiceType.Any);
+            var dice = Player.Hand.TakeNextDice(forceNumber);
             if(dice != null) DiceAdded?.Invoke(this, dice);
         }
     }

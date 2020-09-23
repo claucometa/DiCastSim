@@ -18,9 +18,13 @@
         MinusRandom,
         Home,
         SmallPotion,
+        Quick_SmallPotion,
         BigPotion,
         Stunt,
         Swap,
         Shuffle,
+        Atack,
+        Quick_Atack,
+        Key,
     }
 }
