@@ -1,14 +1,12 @@
-﻿namespace DiCastSim.Objects
+﻿using DiCastSim.Core.Objects;
+
+namespace DiCastSim.Objects
 {
     class BookTwoItem : BaseItem
     {
-        public override string Do()
-        {
-            return $"{game.Player.Name} reading a book";
-        }
-
         public BookTwoItem()
         {
+            effect = new BookTwoEffect();
             Img = Properties.Resources.book2;
         }
     }

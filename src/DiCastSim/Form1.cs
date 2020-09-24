@@ -293,7 +293,7 @@ namespace DiCastSim
                                 game.TakeDice(x[r]);
                             }
 
-                            if (x1 is BagItemTwo)
+                            if (x1 is BagTwoItem)
                             {
                                 var x = new Dice[] { Dice.Stunt, Dice.Key, Dice.GoldenShield };
                                 var r = rand.Get(0, x.Length);
@@ -314,24 +314,22 @@ namespace DiCastSim
                                 // Thunderbolt
                             }
 
-                            if (x1 is MonsterBase)
+                            if (x1 is MonsterOneItem)
                             {
                                 huntMonster1.Visible = true;
-                                
-                                if (x1 is MonsterOneItem)
-                                {
-                                    huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 5 : 4);
-                                }
+                                huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 5 : 4);
+                            }
 
-                                if (x1 is MonsterTwoItem)
-                                {
-                                    huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 3 : 2);
-                                }
-                                
-                                if (x1 is MonsterThreeItem)
-                                {
-                                    huntMonster1.Dices = monsterS.GetDices(1);
-                                }
+                            if (x1 is MonsterTwoItem)
+                            {
+                                huntMonster1.Visible = true;
+                                huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 3 : 2);
+                            }
+
+                            if (x1 is MonsterThreeItem)
+                            {
+                                huntMonster1.Visible = true;
+                                huntMonster1.Dices = monsterS.GetDices(1);
                             }
 
                             UpdateScreenItems();

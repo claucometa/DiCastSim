@@ -1,17 +1,12 @@
-﻿namespace DiCastSim.Objects
+﻿using DiCastSim.Core.Objects;
+
+namespace DiCastSim.Objects
 {
-
-    class MonsterThreeItem : MonsterBase
+    class MonsterThreeItem : BaseItem
     {
-        public override string Do()
-        {
-            base.Do();
-            game.Player.Life -= 3;
-            return $"{game.Player.Name} Monster level III";
-        }
-
         public MonsterThreeItem()
         {
+            effect = new MonsterThreeEffect();
             Img = Properties.Resources.monster3;
         }
     }

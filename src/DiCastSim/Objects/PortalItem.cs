@@ -1,16 +1,12 @@
-﻿namespace DiCastSim.Objects
+﻿using DiCastSim.Core.Objects;
+
+namespace DiCastSim.Objects
 {
     internal class PortalItem : BaseItem
     {
-        public override string Do()
-        {
-            game.Player.Position += 12;
-
-            return $"{game.Player.Name} TP";
-        }
-
         public PortalItem()
         {
+            effect = new PortalEffect();
             Img = Properties.Resources.portal;
         }
     }

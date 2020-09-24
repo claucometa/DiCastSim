@@ -1,16 +1,12 @@
-﻿namespace DiCastSim.Objects
+﻿using DiCastSim.Core.Objects;
+
+namespace DiCastSim.Objects
 {
     class SpikeOneItem : BaseItem
     {
-        public override string Do()
-        {
-            game.Player.AddLife(-3);
-
-            return $"{game.Player.Name} trap I";
-        }
-
         public SpikeOneItem()
         {
+            effect = new SpikeOneEffect();
             Img = Properties.Resources.trap1;
         }
     }

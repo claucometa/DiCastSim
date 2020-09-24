@@ -1,6 +1,6 @@
-﻿namespace DiCastSim.Objects
+﻿namespace DiCastSim.Core.Objects
 {
-    public class MonsterBase : BaseItem
+    public class MonsterEffect : ItemEffect
     {
         public override string Do()
         {
@@ -9,4 +9,5 @@
             return null;
         }
     }
+
 }

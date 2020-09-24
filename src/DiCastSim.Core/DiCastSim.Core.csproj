@@ -56,6 +56,25 @@
   <ItemGroup>
     <Compile Include="IOC\AppModule.cs" />
     <Compile Include="IOC\IOC.cs" />
+    <Compile Include="Objects\BagTwoEffect.cs" />
+    <Compile Include="Objects\MonsterEffect.cs" />
+    <Compile Include="Objects\NothingEffect.cs" />
+    <Compile Include="Objects\PortalEffect.cs" />
+    <Compile Include="Objects\SpikeTwoEffect.cs" />
+    <Compile Include="Objects\SpikeOneEffect.cs" />
+    <Compile Include="Objects\ItemEffect.cs" />
+    <Compile Include="Objects\AppleEffect.cs" />
+    <Compile Include="Objects\BagEffect.cs" />
+    <Compile Include="Objects\BookOneEffect.cs" />
+    <Compile Include="Objects\CastleEffect.cs" />
+    <Compile Include="Objects\CoinEffect.cs" />
+    <Compile Include="Objects\MonsterOneEffect.cs" />
+    <Compile Include="Objects\MonsterTwoEffect.cs" />
+    <Compile Include="Objects\MonsterThreeEffect.cs" />
+    <Compile Include="Objects\BreadEffect.cs" />
+    <Compile Include="Objects\BookTwoEffect.cs" />
+    <Compile Include="Objects\StoreEffect.cs" />
+    <Compile Include="Objects\SwordEffect.cs" />
     <Compile Include="Models\DiceInHand.cs" />
     <Compile Include="Models\PlayerHand.cs" />
     <Compile Include="Models\PlayerSpecialDices.cs" />

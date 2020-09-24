@@ -2,12 +2,12 @@
 
 namespace DiCastSim.Objects
 {
-    class BagItem : BaseItem
+    class BagTwoItem : BaseItem
     {        
-        public BagItem()
+        public BagTwoItem()
         {
-            effect = new BagEffect();
+            effect = new BagTwoEffect();
             Img = Properties.Resources.bag;
         }
-    }    
+    }
 }

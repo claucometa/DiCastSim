@@ -1,16 +1,12 @@
-﻿namespace DiCastSim.Objects
+﻿using DiCastSim.Core.Objects;
+
+namespace DiCastSim.Objects
 {
     class StoreItem : BaseItem
     {
-        public override string Do()
-        {
-            game.Player.Life -= 3;
-
-            return $"{game.Player.Name} shop";
-        }
-
         public StoreItem()
         {
+            effect = new StoreEffect();
             Img = Properties.Resources.store;
         }
     }

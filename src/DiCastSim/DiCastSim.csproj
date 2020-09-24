@@ -87,7 +87,7 @@
     <Compile Include="Envirolment\HuntMonter.Designer.cs">
       <DependentUpon>HuntMonter.cs</DependentUpon>
     </Compile>
-    <Compile Include="Objects\BagItemTwo.cs">
+    <Compile Include="Objects\BagTwoItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Objects\BaseItem.cs">
@@ -130,9 +130,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Objects\CastleItem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Objects\MonsterBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Objects\NothingItem.cs">

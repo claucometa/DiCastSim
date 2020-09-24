@@ -1,16 +1,12 @@
-﻿namespace DiCastSim.Objects
+﻿using DiCastSim.Core.Objects;
+
+namespace DiCastSim.Objects
 {
     class BreadItem : BaseItem
     {
-        public override string Do()
-        {
-            game.Player.Life += 6;
-
-            return $"{game.Player.Name} eating a bread";
-        }
-
         public BreadItem()
         {
+            effect = new BreadEffect();
             Img = Properties.Resources.bread;
         }
     }

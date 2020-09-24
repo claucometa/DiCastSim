@@ -1,4 +1,5 @@
 ﻿using DiCastSim.Core;
+using DiCastSim.Core.Objects;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -9,10 +10,11 @@ namespace DiCastSim
     {
         public int Index;
         protected readonly Game game;
+        protected ItemEffect effect;
 
-        public virtual string Do()
+        public string Do()
         {
-            throw new NotImplementedException();
+            return effect.Do();
         }
 
         public BaseItem()

@@ -1,16 +1,12 @@
-﻿namespace DiCastSim.Objects
+﻿using DiCastSim.Core.Objects;
+
+namespace DiCastSim.Objects
 {
     class CoinItem : BaseItem
-    {
-        public override string Do()
-        {
-            game.Player.Coins += 12;
-
-            return $"{game.Player.Name} got money";
-        }
-
+    {        
         public CoinItem()
         {
+            effect = new CoinEffect();
             Img = Properties.Resources.coin;
         }
     }
