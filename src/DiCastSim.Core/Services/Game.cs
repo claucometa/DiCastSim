@@ -15,6 +15,8 @@ namespace DiCastSim.Core
 
         public Player GetPlayer(Who who) => who == Who.Player1 ? p1 : p2;
 
+        public Player Opponent => GetPlayer(PlayerTurn == Game.Who.Player1 ? Game.Who.Player2 : Game.Who.Player1);
+
         public Who PlayerTurn => p1.Turns > 0 ? Who.Player1 : Who.Player2;
 
         public void SwitchPlayers()

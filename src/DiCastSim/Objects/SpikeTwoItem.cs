@@ -4,7 +4,7 @@
     {
         public override string Do()
         {
-            game.Player.Life -= 6;
+            game.Player.AddLife(-6);
 
             return $"{game.Player.Name} trap II";
         }

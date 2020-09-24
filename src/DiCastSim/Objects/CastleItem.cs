@@ -4,12 +4,22 @@
     {
         public override string Do()
         {
-            if (game.Player == game.GetPlayer(Core.Game.Who.Player1))
-                return Index == 0 ? $"{game.Player.Name} castle p1" :
-                    $"{game.Player.Name} locked up";
+            var home = game.PlayerTurn == Core.Game.Who.Player1 ? 0 : 12;
 
-            return Index == 12 ? $"{game.Player.Name} castle p1" :
-                 $"{game.Player.Name} locked up";
+            if (Index == home)
+            {
+                game.Player.Atack += 1;
+                game.Player.Coins += 12;
+                // TODO add special card
+                // TODO Add base effect
+                return $"{game.Player.Name} castle p1";
+            }
+            else
+            {
+                game.Player.Imprisioned = true;
+                game.Opponent.Turns++;
+                return $"{game.Player.Name} locked up";
+            }
         }
 
         public CastleItem()

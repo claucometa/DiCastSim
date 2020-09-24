@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace DiCastSim
@@ -284,7 +283,7 @@ namespace DiCastSim
 
                             if (x1 is PortalItem)
                             {
-                                MoveSprite(12, CurrentSprite);
+                                MoveSprite(0, CurrentSprite);
                             }
 
                             if (x1 is BagItem)
@@ -315,28 +314,24 @@ namespace DiCastSim
                                 // Thunderbolt
                             }
 
-                            if (x1 is MonsterOneItem)
+                            if (x1 is MonsterBase)
                             {
                                 huntMonster1.Visible = true;
-                                huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 5 : 4);
-                                game.Hunting = true;
-                                game.AddDice(true);
-                            }
+                                
+                                if (x1 is MonsterOneItem)
+                                {
+                                    huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 5 : 4);
+                                }
 
-                            if (x1 is MonsterTwoItem)
-                            {
-                                huntMonster1.Visible = true;
-                                huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 3 : 2);
-                                game.Hunting = true;
-                                game.AddDice(true);
-                            }
-
-                            if (x1 is MonsterThreeItem)
-                            {
-                                huntMonster1.Visible = true;
-                                huntMonster1.Dices = monsterS.GetDices(1);
-                                game.Hunting = true;
-                                game.AddDice(true);
+                                if (x1 is MonsterTwoItem)
+                                {
+                                    huntMonster1.Dices = monsterS.GetDices(rand.Get(0, 2) == 1 ? 3 : 2);
+                                }
+                                
+                                if (x1 is MonsterThreeItem)
+                                {
+                                    huntMonster1.Dices = monsterS.GetDices(1);
+                                }
                             }
 
                             UpdateScreenItems();

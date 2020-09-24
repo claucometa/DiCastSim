@@ -132,6 +132,9 @@
     <Compile Include="Objects\CastleItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Objects\MonsterBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Objects\NothingItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
