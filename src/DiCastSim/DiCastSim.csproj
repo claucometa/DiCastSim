@@ -75,11 +75,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Inventario.cs" />
-    <Compile Include="Envirolment\DiceView.cs">
+    <Compile Include="Envirolment\DicePad.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Envirolment\DiceView.Designer.cs">
-      <DependentUpon>DiceView.cs</DependentUpon>
+    <Compile Include="Envirolment\DicePad.Designer.cs">
+      <DependentUpon>DicePad.cs</DependentUpon>
     </Compile>
     <Compile Include="Envirolment\HuntMonter.cs">
       <SubType>UserControl</SubType>
@@ -176,8 +176,8 @@
     <Compile Include="Envirolment\PlayerSprit.Designer.cs">
       <DependentUpon>PlayerSprit.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Envirolment\DiceView.resx">
-      <DependentUpon>DiceView.cs</DependentUpon>
+    <EmbeddedResource Include="Envirolment\DicePad.resx">
+      <DependentUpon>DicePad.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Envirolment\HuntMonter.resx">
       <DependentUpon>HuntMonter.cs</DependentUpon>

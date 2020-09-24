@@ -1,4 +1,5 @@
-﻿using DiCastSim.Core.Services;
+﻿using DiCastSim.Core.Enums;
+using DiCastSim.Core.Services;
 using System.Linq;
 
 namespace DiCastSim.Core.Models
@@ -10,12 +11,31 @@ namespace DiCastSim.Core.Models
         public int Atack { get; set; }
         public int LastPosition { get; set; } = -1;
         public int Position { get; set; } = 0;
-        public bool Imprisioned { get; set; } = false;
+
+        bool _Imprisioned { get; set; } = false;
+        public bool Imprisioned
+        {
+            get => _Imprisioned;
+            set
+            {
+                if(value)
+                {
+                    var key = Hand.First(x => x.Dice == Dice.Key);
+                    value = key == null;
+                    if (key != null) Hand.Remove(key);
+                }
+                _Imprisioned = value;
+            }
+        }
+
         public int ExitAttempts { get; set; } = 0;
         public int Level { get; set; } = 1;
         public string Name { get; set; }
         public int InitialPosition { get; set; }
         public int Turns { get; set; } = 0;
+        public bool LockEven { get; set; }
+        public bool LockOdd { get; set; }
+
         public PlayerSpecialDices SpecialDices = new PlayerSpecialDices();
         public readonly PlayerHand Hand;
         Randomizer rand;

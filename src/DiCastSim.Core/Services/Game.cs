@@ -7,7 +7,7 @@ namespace DiCastSim.Core
     public class Game
     {
         public int Turn = -1;
-        public int TotalItems => Enum.GetValues(typeof(Items)).Length;
+        public int TotalItems => Enum.GetValues(typeof(Drops)).Length;
         public bool Hunting;
         public Player Player => p1.Turns > 0 ? p1 : p2;
         private Player p1, p2;

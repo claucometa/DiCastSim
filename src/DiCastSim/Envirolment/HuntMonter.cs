@@ -19,7 +19,7 @@ namespace DiCastSim
             {
                 flowLayoutPanel1.Controls.Clear();
                 for (int i = 0; i < value.Length; i++)
-                    flowLayoutPanel1.Controls.Add(new DiceView(new Core.Models.DiceInHand(i, (Dice) value[i])));
+                    flowLayoutPanel1.Controls.Add(new DicePad(new Core.Models.DiceInHand(i, (Dice) value[i])));
             }
         }
     }

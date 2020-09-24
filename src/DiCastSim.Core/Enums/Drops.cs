@@ -1,6 +1,6 @@
 ﻿namespace DiCastSim.Core.Enums
 {
-    public enum Items
+    public enum Drops
     {
         Castle,
         Portal,

@@ -14,7 +14,7 @@ namespace DiCastSim
 {
     public partial class Form1 : Form
     {
-        readonly Queue<Items> repeatItems = new Queue<Items>();
+        readonly Queue<Drops> repeatItems = new Queue<Drops>();
 
         private PlayerSprit _sprite1;
         PlayerSprit Sprite1
@@ -114,23 +114,45 @@ namespace DiCastSim
 
         private void AddDice(PlayerSprit pv, DiceInHand dice)
         {
-            var d = new DiceView(dice);
+            var d = new DicePad(dice);
             d.Clicked += Dice_Clicked;
             pv.Deck.Controls.Add(d);
         }
 
         private void Dice_Clicked(object sender, DiceInHand e)
         {
-            var obj = (DiceView)sender;
+            var dicePad = (DicePad)sender;
 
             // Avoid click out of turn
-            if (obj.Parent == flowLayoutPanel1 && CurrentSprite != Sprite1) return;
-            if (obj.Parent == flowLayoutPanel2 && CurrentSprite != Sprite2) return;
+            if (dicePad.Parent == flowLayoutPanel1 && CurrentSprite != Sprite1) return;
+            if (dicePad.Parent == flowLayoutPanel2 && CurrentSprite != Sprite2) return;
 
-            var diceFace = obj.ThrowDice();
+            var diceFace = dicePad.PaintDiceFace();
 
             if (diceFace.HasValue)
             {
+                if (game.Player.LockEven)
+                {
+                    game.Player.LockEven = false;
+                    game.Player.LockOdd = false;
+                    if (diceFace.Value % 2 == 0)
+                    {
+                        MessageBox.Show("Break lock and don't move");
+                        diceFace = 0;
+                    }
+                }
+
+                if (game.Player.LockOdd)
+                {
+                    game.Player.LockEven = false;
+                    game.Player.LockOdd = false;
+                    if (diceFace.Value % 2 != 0)
+                    {
+                        MessageBox.Show("Break lock and don't move");
+                        diceFace = 0;
+                    }
+                }
+
                 if (game.Hunting)
                 {
                     // Handle negative number as positive
@@ -160,60 +182,85 @@ namespace DiCastSim
             }
             else
             {
-                if (obj.SpecialDice.Dice == Dice.LockEven)
+                if (dicePad.SpecialDice.Dice == Dice.LockEven)
                 {
+                    game.Opponent.LockEven = true;
                 }
-                else if (obj.SpecialDice.Dice == Dice.LockOdd)
+                else if (dicePad.SpecialDice.Dice == Dice.LockOdd)
                 {
+                    game.Opponent.LockOdd = true;
                 }
-                else if (obj.SpecialDice.Dice == Dice.DrawTwoDices)
+                else if (dicePad.SpecialDice.Dice == Dice.DrawTwoDices)
                 {
+                    if (game.Player.Hand.Count == 5)
+                        game.AddDice();
+
+                    if (game.Player.Hand.Count < 5)
+                    {
+                        game.AddDice();
+                        game.AddDice();
+                    }
                 }
-                else if (obj.SpecialDice.Dice == Dice.Shuffle)
+                else if (dicePad.SpecialDice.Dice == Dice.Shuffle)
                 {
                     game.Player.Turns++;
                     game.Player.Hand.Shuffle();
                     for (int i = 0; i < game.Player.Hand.Count; i++)
                     {
-                        ((DiceView)CurrentSprite.Deck.Controls[i]).Change(game.Player.Hand[i].Dice);
+                        ((DicePad)CurrentSprite.Deck.Controls[i]).Change(game.Player.Hand[i].Dice);
                     }
                 }
-                else if (obj.SpecialDice.Dice == Dice.Home)
+                else if (dicePad.SpecialDice.Dice == Dice.Home)
                 {
                     game.Player.GoHome();
                     MoveSprite(0, CurrentSprite);
                     DoAction();
                 }
-                else if (obj.SpecialDice.Dice == Dice.Atack)
+                else if (dicePad.SpecialDice.Dice == Dice.Atack)
                 {
                     game.Player.AddLife(game.PlayerTurn == Game.Who.Player1 ? -Player1.Atack : -Player2.Atack);
                 }
-                else if (obj.SpecialDice.Dice == Dice.Quick_Atack)
+                else if (dicePad.SpecialDice.Dice == Dice.Quick_Atack)
                 {
                     game.Player.Turns++;
                     game.Player.AddLife(game.PlayerTurn == Game.Who.Player1 ? -Player1.Atack : -Player2.Atack);
                 }
-                else if (obj.SpecialDice.Dice == Dice.SmallPotion)
+                else if (dicePad.SpecialDice.Dice == Dice.SmallPotion)
                 {
                     game.Player.AddLife(7);
                 }
-                else if (obj.SpecialDice.Dice == Dice.Quick_SmallPotion)
+                else if (dicePad.SpecialDice.Dice == Dice.Quick_SmallPotion)
                 {
                     game.Player.Turns++;
                     game.Player.AddLife(7);
                 }
-                else if (obj.SpecialDice.Dice == Dice.BigPotion)
+                else if (dicePad.SpecialDice.Dice == Dice.BigPotion)
                 {
                     game.Player.AddLife(15);
                 }
-                else if (obj.SpecialDice.Dice == Dice.Stunt)
+                else if (dicePad.SpecialDice.Dice == Dice.Stunt)
                 {
                     game.Player.Stun();
                 }
             }
 
-            CurrentSprite.Deck.Controls.Remove(obj);
+            CurrentSprite.Deck.Controls.Remove(dicePad);
             game.Player.Hand.Remove(e);
+
+            // Lock player
+            if (game.Player.Position % 24 == game.Opponent.Position % 24)
+            {
+                var prisioner = game.PlayerTurn == Game.Who.Player2 ? game.Player : game.Opponent;
+
+                if (game.Player.Position % 24 == 0 || game.Player.Position % 24 == 12)
+                {
+                    game.Player.Imprisioned = game.Player.Position % 24 != game.Player.InitialPosition;
+                }
+                else
+                {
+                    prisioner.Imprisioned = true;
+                }
+            }
 
             if (!game.Hunting) game.SwitchPlayers();
 
@@ -226,7 +273,7 @@ namespace DiCastSim
         public void SpawnOnMove(int position)
         {
             if (position % 6 == 0) return;
-            var x = rand.Get(0, 2) == 0 ? inventario.CreateItem(Items.Sword) : inventario.CreateItem(GetRandomItem);
+            var x = rand.Get(0, 2) == 0 ? inventario.CreateItem(Drops.Sword) : inventario.CreateItem(GetRandomItem);
             ((BaseItem)x).Index = position;
             Controls.Add(x);
             PlaceItem(x, position);
@@ -243,17 +290,17 @@ namespace DiCastSim
             }
         }
 
-        private Items AtPosition(int i)
+        private Drops AtPosition(int i)
         {
-            Items item;
-            if (i == 0 || i == 12) item = Items.Castle;
-            else if (i == 6 || i == 18) item = Items.Portal;
+            Drops item;
+            if (i == 0 || i == 12) item = Drops.Castle;
+            else if (i == 6 || i == 18) item = Drops.Portal;
             else if (i < 12) { item = GetRandomItem; repeatItems.Enqueue(item); }
             else item = repeatItems.Dequeue();
             return item;
         }
 
-        private Items GetRandomItem => (Items)rand.Get(2, game.TotalItems);
+        private Drops GetRandomItem => (Drops)rand.Get(2, game.TotalItems);
         //private Items GetRandomItem => Items.Monster1; // DEBUG
 
         private void PlaceItem(UserControl item, int pos)

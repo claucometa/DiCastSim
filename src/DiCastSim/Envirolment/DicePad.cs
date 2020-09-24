@@ -7,12 +7,12 @@ using System.Windows.Forms;
 
 namespace DiCastSim.Envirolment
 {
-    public partial class DiceView : UserControl
+    public partial class DicePad : UserControl
     {
         public DiceInHand Tipo { get; set; }
         public readonly DiceGenerator dc;
 
-        public int? ThrowDice()
+        public int? PaintDiceFace()
         {
             if (Value.HasValue)
                 label1.Text = Value.ToString();
@@ -31,7 +31,7 @@ namespace DiCastSim.Envirolment
             }
         }
 
-        public DiceView(DiceInHand tipo)
+        public DicePad(DiceInHand tipo)
         {
             InitializeComponent();
             Tipo = tipo;

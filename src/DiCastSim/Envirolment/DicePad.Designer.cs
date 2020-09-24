@@ -1,6 +1,6 @@
 ﻿namespace DiCastSim.Envirolment
 {
-    partial class DiceView
+    partial class DicePad
     {
         /// <summary> 
         /// Required designer variable.

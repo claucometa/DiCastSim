@@ -83,7 +83,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Services\DiceGenerator.cs" />
-    <Compile Include="Enums\Items.cs" />
+    <Compile Include="Enums\Drops.cs" />
     <Compile Include="Services\MonsterService.cs" />
     <Compile Include="Services\Randomizer.cs" />
   </ItemGroup>
