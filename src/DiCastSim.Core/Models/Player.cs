@@ -1,5 +1,8 @@
-﻿using DiCastSim.Core.Enums;
+﻿using DiCastSim.Core.Base;
+using DiCastSim.Core.Castles;
+using DiCastSim.Core.Enums;
 using DiCastSim.Core.Services;
+using System;
 using System.Linq;
 
 namespace DiCastSim.Core.Models
@@ -11,6 +14,22 @@ namespace DiCastSim.Core.Models
         public int Atack { get; set; }
         public int LastPosition { get; set; } = -1;
         public int Position { get; set; } = 0;
+        private CastleFabric CastleFabric { get; set; }
+        public CastleTypes CastleType { get; set; } = CastleTypes.Atack;
+        private IBaseCastle castle;
+        private IBaseCastle Castle
+        {
+            get
+            {
+                if (castle == null) castle = CastleFabric.Build(CastleType);
+                return castle;
+            }
+        }
+
+        internal void LevelUp()
+        {
+            Atack += 1;
+        }
 
         bool _Imprisioned { get; set; } = false;
         public bool Imprisioned
@@ -18,7 +37,7 @@ namespace DiCastSim.Core.Models
             get => _Imprisioned;
             set
             {
-                if(value)
+                if (value)
                 {
                     var key = Hand.First(x => x.Dice == Dice.Key);
                     value = key == null;
@@ -38,19 +57,21 @@ namespace DiCastSim.Core.Models
 
         public PlayerSpecialDices SpecialDices = new PlayerSpecialDices();
         public readonly PlayerHand Hand;
-        Randomizer rand;
+        readonly Randomizer rand;
 
         public Player()
         {
             rand = IOC.Resolve<Randomizer>();
+            CastleFabric = IOC.Resolve<CastleFabric>();
             Hand = new PlayerHand(this);
         }
 
-        public static Player Build(string name, int init)
+        public static Player Build(string name, int init, CastleTypes castleType)
         {
             return new Player()
             {
                 Name = name,
+                CastleType = castleType,
                 Coins = 20,
                 Life = 44,
                 Atack = 15,
@@ -91,6 +112,11 @@ namespace DiCastSim.Core.Models
         public void GoHome()
         {
             Position = InitialPosition;
+        }
+
+        public void LandOnBase(Game game)
+        {
+            Castle.LandOnBase(game);
         }
     }
 }

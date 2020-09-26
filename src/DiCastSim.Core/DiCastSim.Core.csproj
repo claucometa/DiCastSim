@@ -54,6 +54,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CastleFabric.cs" />
+    <Compile Include="Enums\CastleTypes.cs" />
+    <Compile Include="Base\IBaseCastle.cs" />
+    <Compile Include="Castles\AtackCastle.cs" />
+    <Compile Include="Base\BaseCastle.cs" />
+    <Compile Include="Castles\FireCastle.cs" />
+    <Compile Include="Castles\GoldCastle.cs" />
+    <Compile Include="Castles\HealthCastle.cs" />
     <Compile Include="IOC\AppModule.cs" />
     <Compile Include="IOC\IOC.cs" />
     <Compile Include="Objects\BagTwoEffect.cs" />

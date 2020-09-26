@@ -1,6 +1,7 @@
 ﻿using DiCastSim.Core.Enums;
 using DiCastSim.Core.Models;
 using System;
+using System.Linq;
 
 namespace DiCastSim.Core
 {
@@ -18,6 +19,13 @@ namespace DiCastSim.Core
         public Player Opponent => GetPlayer(PlayerTurn == Game.Who.Player1 ? Game.Who.Player2 : Game.Who.Player1);
 
         public Who PlayerTurn => p1.Turns > 0 ? Who.Player1 : Who.Player2;
+
+        public bool PlayerLandedOnBase => new int[] { 0, 12, 18 }.Contains(Player.LastPosition % 24);
+
+        internal void PerformAtack()
+        {
+            Opponent.Life -= Player.Atack;
+        }
 
         public void SwitchPlayers()
         {
@@ -51,8 +59,8 @@ namespace DiCastSim.Core
         {
             Turn = 1;
 
-            p1 = Player.Build("Player 1", 24 * 100);
-            p2 = Player.Build("Player 2", 12);
+            p1 = Player.Build("Player 1", 24 * 100, Base.CastleTypes.Atack);
+            p2 = Player.Build("Player 2", 12, Base.CastleTypes.Atack);
 
             if (who == Who.Player1)
                 p1.Turns = 1;

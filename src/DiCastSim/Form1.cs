@@ -1,4 +1,5 @@
 ﻿using DiCastSim.Core;
+using DiCastSim.Core.Base;
 using DiCastSim.Core.Enums;
 using DiCastSim.Core.Models;
 using DiCastSim.Core.Services;
@@ -425,14 +426,17 @@ namespace DiCastSim
             item.Player.Position += move;
             if (item.Player.LastPosition >= 0)
             {
-                if (!new int[] { 0, 12, 18 }.Contains(item.Player.LastPosition % 24))
-                {
+                if (!game.PlayerLandedOnBase)
                     SpawnOnMove(item.Player.LastPosition);
-                }
             }
             item.Player.LastPosition = item.Player.Position;
 
             PlaceItem(item, item.Player.Position);
+
+            if (game.PlayerLandedOnBase && game.Turn > 1)
+            {
+                game.Player.LandOnBase(game);
+            }
         }
     }
 }
