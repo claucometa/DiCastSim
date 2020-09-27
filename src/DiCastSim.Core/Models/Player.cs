@@ -7,6 +7,12 @@ using System.Linq;
 
 namespace DiCastSim.Core.Models
 {
+    public class SkillPlayer
+    {
+        public int Level { get; set; }
+        public int Active { get; set; }
+    }
+
     public class Player
     {
         public int Coins { get; set; }
@@ -56,10 +62,8 @@ namespace DiCastSim.Core.Models
         public int Turns { get; set; } = 0;
         public bool LockEven { get; set; }
         public bool LockOdd { get; set; }
-        public int Skill1 { get; set; } = 1;
-        public int Skill2 { get; set; } = 1;
-        public int Skill3 { get; set; } = 0;
-        public bool CanUpgradeSkill => (Skill1 + Skill2 + Skill3) < 9;
+        public SkillPlayer[] Skill { get; set; }
+        public bool CanUpgradeSkill => (Skill[0].Level + Skill[1].Level + Skill[2].Level) < 9;
 
         public PlayerSpecialDices SpecialDices = new PlayerSpecialDices();
         public readonly PlayerHand Hand;
@@ -72,20 +76,9 @@ namespace DiCastSim.Core.Models
             Hand = new PlayerHand(this);
         }
 
-        public void LevelUpSkill(Skills skill)
+        public void LevelUpSkill(Skills index)
         {
-            switch (skill)
-            {
-                case Skills.One:
-                    Skill1++;
-                    break;
-                case Skills.Two:
-                    Skill2++;
-                    break;
-                case Skills.Three:
-                    Skill3++;
-                    break;
-            }
+            Skill[(int)index].Level++;
         }
 
         public static Player Build(string name, int init, CastleTypes castleType)
@@ -107,9 +100,15 @@ namespace DiCastSim.Core.Models
         {
             Turns += 2;
         }
-
-        public void AddLife(int v)
+        
+        public void TakeDamage(double b)
         {
+            AddLife(b * -1);
+        }
+
+        public void AddLife(double b)
+        {
+            var v = (int)b;
             if (v < 0)
             {
                 if (Hand.Any(t => t.Dice == Enums.Dice.Shield))

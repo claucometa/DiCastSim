@@ -63,6 +63,17 @@
     <Compile Include="Castles\GoldCastle.cs" />
     <Compile Include="Castles\HealthCastle.cs" />
     <Compile Include="Enums\Skills.cs" />
+    <Compile Include="Heros\BaseSkill.cs" />
+    <Compile Include="Heros\Fire\S2.cs" />
+    <Compile Include="Heros\Fire\S1.cs" />
+    <Compile Include="Heros\Fire\S3.cs" />
+    <Compile Include="Heros\Grass\S1.cs" />
+    <Compile Include="Heros\Grass\S2.cs" />
+    <Compile Include="Heros\Grass\S3.cs" />
+    <Compile Include="Heros\Hunter\S1.cs" />
+    <Compile Include="Heros\Hunter\S2.cs" />
+    <Compile Include="Heros\Hunter\S3.cs" />
+    <Compile Include="Heros\ISkill.cs" />
     <Compile Include="IOC\AppModule.cs" />
     <Compile Include="IOC\IOC.cs" />
     <Compile Include="Objects\BagTwoEffect.cs" />
