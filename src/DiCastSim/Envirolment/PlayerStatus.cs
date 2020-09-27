@@ -34,6 +34,7 @@ namespace DiCastSim
                 label6.Text = p.Atack.ToString();
                 label13.Visible = p.Imprisioned;
                 label8.Text = p.Level.ToString();
+                userSkills1.Player = p;
             }
         }
     }

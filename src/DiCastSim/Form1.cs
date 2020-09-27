@@ -1,5 +1,4 @@
 ﻿using DiCastSim.Core;
-using DiCastSim.Core.Base;
 using DiCastSim.Core.Enums;
 using DiCastSim.Core.Models;
 using DiCastSim.Core.Services;
@@ -8,7 +7,6 @@ using DiCastSim.Objects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace DiCastSim
@@ -58,6 +56,23 @@ namespace DiCastSim
             game.DiceAdded += Game_DiceAdded;
         }
 
+        private void Player2_PlayerHasLeveldUp(object sender, EventArgs e)
+        {
+            if (Player2.CanUpgradeSkill) LevelUpSkill(Player2);
+        }
+
+        private void Player1_PlayerHasLeveldUp(object sender, EventArgs e)
+        {
+            if (Player1.CanUpgradeSkill) LevelUpSkill(Player1);
+        }
+
+        private void LevelUpSkill(Player p)
+        {
+            var skillDialog = new Form2(p);
+            skillDialog.ShowDialog(this);
+            p.LevelUpSkill(skillDialog.skill);
+        }
+
         private void Game_DiceAdded(object sender, DiceInHand dice)
         {
             AddDice(CurrentSprite, dice);
@@ -81,6 +96,9 @@ namespace DiCastSim
         private void StartGame(Game.Who who)
         {
             game.Start(who);
+            Player1.PlayerHasLeveldUp += Player1_PlayerHasLeveldUp;
+            Player2.PlayerHasLeveldUp += Player2_PlayerHasLeveldUp;
+
             SetScreemItems();
             //game.TakeDice(Dice.Shuffle); // DEBUG
             game.AddDice();

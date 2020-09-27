@@ -62,6 +62,7 @@
     <Compile Include="Castles\FireCastle.cs" />
     <Compile Include="Castles\GoldCastle.cs" />
     <Compile Include="Castles\HealthCastle.cs" />
+    <Compile Include="Enums\Skills.cs" />
     <Compile Include="IOC\AppModule.cs" />
     <Compile Include="IOC\IOC.cs" />
     <Compile Include="Objects\BagTwoEffect.cs" />

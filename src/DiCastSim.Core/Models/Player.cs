@@ -17,6 +17,7 @@ namespace DiCastSim.Core.Models
         private CastleFabric CastleFabric { get; set; }
         public CastleTypes CastleType { get; set; } = CastleTypes.Atack;
         private IBaseCastle castle;
+        public event EventHandler PlayerHasLeveldUp;
         private IBaseCastle Castle
         {
             get
@@ -28,6 +29,7 @@ namespace DiCastSim.Core.Models
 
         internal void LevelUp()
         {
+            PlayerHasLeveldUp?.Invoke(this, null);
             Atack += 1;
         }
 
@@ -54,6 +56,10 @@ namespace DiCastSim.Core.Models
         public int Turns { get; set; } = 0;
         public bool LockEven { get; set; }
         public bool LockOdd { get; set; }
+        public int Skill1 { get; set; } = 1;
+        public int Skill2 { get; set; } = 1;
+        public int Skill3 { get; set; } = 0;
+        public bool CanUpgradeSkill => (Skill1 + Skill2 + Skill3) < 9;
 
         public PlayerSpecialDices SpecialDices = new PlayerSpecialDices();
         public readonly PlayerHand Hand;
@@ -64,6 +70,22 @@ namespace DiCastSim.Core.Models
             rand = IOC.Resolve<Randomizer>();
             CastleFabric = IOC.Resolve<CastleFabric>();
             Hand = new PlayerHand(this);
+        }
+
+        public void LevelUpSkill(Skills skill)
+        {
+            switch (skill)
+            {
+                case Skills.One:
+                    Skill1++;
+                    break;
+                case Skills.Two:
+                    Skill2++;
+                    break;
+                case Skills.Three:
+                    Skill3++;
+                    break;
+            }
         }
 
         public static Player Build(string name, int init, CastleTypes castleType)
