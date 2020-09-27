@@ -9,7 +9,7 @@
                 if ((p2.Position - p2.LastPosition) < (skill.Level + 3))
                 {
                     skill.Active--;
-                    p2.TakeDamage(p1.Atack * per() * -1);
+                    p2.TakeDamage(p1.Atack * per());
                 }
 
             double per()

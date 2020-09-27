@@ -1,5 +1,4 @@
 ﻿using DiCastSim.Core.Base;
-using DiCastSim.Core.Castles;
 using DiCastSim.Core.Enums;
 using DiCastSim.Core.Services;
 using System;
@@ -101,27 +100,27 @@ namespace DiCastSim.Core.Models
             Turns += 2;
         }
         
-        public void TakeDamage(double b)
+        public void TakeDamage(double atack)
         {
-            AddLife(b * -1);
+            AddLife(atack * -1);
         }
 
-        public void AddLife(double b)
+        public void AddLife(double life)
         {
-            var v = (int)b;
+            var v = (int)life;
             if (v < 0)
             {
-                if (Hand.Any(t => t.Dice == Enums.Dice.Shield))
+                if (Hand.Any(t => t.Dice == Dice.Shield))
                 {
                     v = 0;
                 }
-                else if (Hand.Any(t => t.Dice == Enums.Dice.GoldenShield))
+                else if (Hand.Any(t => t.Dice == Dice.GoldenShield))
                 {
                     var rest = (int)(Coins / v);
                     Coins += v * 5;
                     v += rest;
                 }
-                else if (Hand.Any(t => t.Dice == Enums.Dice.BrokenShield))
+                else if (Hand.Any(t => t.Dice == Dice.BrokenShield))
                 {
                     if (rand.Get(0, 2) == 0) v = 0;
                 }

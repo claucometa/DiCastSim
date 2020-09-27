@@ -186,7 +186,7 @@ namespace DiCastSim
                     else
                     {
                         MessageBox.Show("You lose");
-                        game.Player.Life -= monsterS.Atack;
+                        game.Player.TakeDamage(monsterS.Atack);
                     }
 
                     game.Hunting = false;
@@ -237,12 +237,12 @@ namespace DiCastSim
                 }
                 else if (dicePad.SpecialDice.Dice == Dice.Atack)
                 {
-                    game.Player.AddLife(game.PlayerTurn == Game.Who.Player1 ? -Player1.Atack : -Player2.Atack);
+                    game.Player.TakeDamage(game.PlayerTurn == Game.Who.Player1 ? Player1.Atack : Player2.Atack);
                 }
                 else if (dicePad.SpecialDice.Dice == Dice.Quick_Atack)
                 {
                     game.Player.Turns++;
-                    game.Player.AddLife(game.PlayerTurn == Game.Who.Player1 ? -Player1.Atack : -Player2.Atack);
+                    game.Player.TakeDamage(game.PlayerTurn == Game.Who.Player1 ? Player1.Atack : Player2.Atack);
                 }
                 else if (dicePad.SpecialDice.Dice == Dice.SmallPotion)
                 {
