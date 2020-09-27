@@ -68,11 +68,12 @@ namespace DiCastSim.Core.Models
         public readonly PlayerHand Hand;
         readonly Randomizer rand;
 
-        public Player()
+        public Player(HeroType type)
         {
             rand = IOC.Resolve<Randomizer>();
             CastleFabric = IOC.Resolve<CastleFabric>();
             Hand = new PlayerHand(this);
+            Skill = new HeroSkillFabric().Build(type);
         }
 
         public void LevelUpSkill(Skills index)
@@ -80,9 +81,9 @@ namespace DiCastSim.Core.Models
             Skill[(int)index].Level++;
         }
 
-        public static Player Build(string name, int init, CastleTypes castleType)
+        public static Player Build(HeroType type, string name, int init, CastleTypes castleType)
         {
-            return new Player()
+            return new Player(type)
             {
                 Name = name,
                 CastleType = castleType,

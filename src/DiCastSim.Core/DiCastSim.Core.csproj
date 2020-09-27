@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CastleFabric.cs" />
+    <Compile Include="Services\CastleFabric.cs" />
     <Compile Include="Enums\CastleTypes.cs" />
     <Compile Include="Base\IBaseCastle.cs" />
     <Compile Include="Castles\AtackCastle.cs" />
@@ -62,6 +62,7 @@
     <Compile Include="Castles\FireCastle.cs" />
     <Compile Include="Castles\GoldCastle.cs" />
     <Compile Include="Castles\HealthCastle.cs" />
+    <Compile Include="Enums\HeroType.cs" />
     <Compile Include="Enums\Skills.cs" />
     <Compile Include="Heros\BaseSkill.cs" />
     <Compile Include="Heros\Fire\S2.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Heros\ISkill.cs" />
     <Compile Include="IOC\AppModule.cs" />
     <Compile Include="IOC\IOC.cs" />
+    <Compile Include="Services\HeroSkillFabric.cs" />
     <Compile Include="Objects\BagTwoEffect.cs" />
     <Compile Include="Objects\MonsterEffect.cs" />
     <Compile Include="Objects\NothingEffect.cs" />
