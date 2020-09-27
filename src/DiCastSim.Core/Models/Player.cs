@@ -41,9 +41,9 @@ namespace DiCastSim.Core.Models
             {
                 if (value)
                 {
-                    var key = Hand.First(x => x.Dice == Dice.Key);
+                    var key = Hand.FirstOrDefault(x => x.Dice == Dice.Key);
                     value = key == null;
-                    if (key != null) Hand.Remove(key);
+                    if (!value) Hand.Remove(key);
                 }
                 _Imprisioned = value;
             }
