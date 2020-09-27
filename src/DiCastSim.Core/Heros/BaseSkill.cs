@@ -8,7 +8,7 @@ namespace DiCastSim.Core.Heros
         protected Game game;
         protected Player p1 => game.Player;
         protected Player p2 => game.Opponent;
-        protected SkillPlayer skill => p1.Skill[(int)Skills.Three];
+        protected SkillPlayer skill => p1.Skill[Skills.Three];
 
         public BaseSkill()
         {

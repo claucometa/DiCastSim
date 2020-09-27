@@ -13,6 +13,7 @@ namespace DiCastSim.Core
         public Player Player => p1.Turns > 0 ? p1 : p2;
         private Player p1, p2;
         public event EventHandler<DiceInHand> DiceAdded;
+        private int bothTurns;
 
         public Player GetPlayer(Who who) => who == Who.Player1 ? p1 : p2;
 
@@ -24,7 +25,7 @@ namespace DiCastSim.Core
 
         internal void PerformAtack()
         {
-            Opponent.Life -= Player.Atack;
+            Opponent.TakeDamage(Player.Atack);
         }
 
         public void SwitchPlayers()
@@ -34,8 +35,8 @@ namespace DiCastSim.Core
                 p1.Turns--;
                 if (p1.Turns == 0)
                 {
+                    bothTurns++;
                     p2.Turns++;
-                    Turn++;
                 }
             }
             else if (PlayerTurn == Who.Player2)
@@ -43,9 +44,15 @@ namespace DiCastSim.Core
                 p2.Turns--;
                 if (p2.Turns == 0)
                 {
+                    bothTurns++;
                     p1.Turns++;
-                    Turn++;
                 }
+            }
+
+            if (bothTurns == 2)
+            {
+                bothTurns = 0;
+                Turn++;
             }
         }
 
@@ -59,8 +66,8 @@ namespace DiCastSim.Core
         {
             Turn = 1;
 
-            p1 = Player.Build("Player 1", 24 * 100, Base.CastleTypes.Atack);
-            p2 = Player.Build("Player 2", 12, Base.CastleTypes.Atack);
+            p1 = Player.Build(HeroType.Fire, "Player 1", 24 * 100, Base.CastleTypes.Atack);
+            p2 = Player.Build(HeroType.Hunter, "Player 2", 12, Base.CastleTypes.Atack);
 
             if (who == Who.Player1)
                 p1.Turns = 1;
@@ -77,7 +84,7 @@ namespace DiCastSim.Core
         public void AddDice(bool forceNumber = false)
         {
             var dice = Player.Hand.TakeNextDice(forceNumber);
-            if(dice != null) DiceAdded?.Invoke(this, dice);
+            if (dice != null) DiceAdded?.Invoke(this, dice);
         }
     }
 }

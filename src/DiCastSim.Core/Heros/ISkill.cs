@@ -2,6 +2,6 @@
 {
     public interface ISkill
     {
-        void Do();
+        string Trigger();
     }
 }

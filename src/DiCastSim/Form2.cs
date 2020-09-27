@@ -13,9 +13,9 @@ namespace DiCastSim
         {
             InitializeComponent();
 
-            button1.Enabled = x.Skill1 < 3;
-            button2.Enabled = x.Skill2 < 3;
-            button3.Enabled = x.Skill3 < 3;
+            button1.Enabled = x.Skill[Skills.One].Level < 3;
+            button2.Enabled = x.Skill[Skills.Two].Level < 3;
+            button3.Enabled = x.Skill[Skills.Three].Level < 3;
         }
 
         private void button1_Click(object sender, EventArgs e)

@@ -100,7 +100,7 @@ namespace DiCastSim
             Player2.PlayerHasLeveldUp += Player2_PlayerHasLeveldUp;
 
             SetScreemItems();
-            //game.TakeDice(Dice.Shuffle); // DEBUG
+            //game.TakeDice(Dice.MinusOne); // DEBUG
             game.AddDice();
         }
 
@@ -281,6 +281,16 @@ namespace DiCastSim
                 }
             }
 
+            // Perform all skills 
+            foreach (var skill in game.Player.Skill)
+            {
+                var result = skill.Trigger();
+                if(!string.IsNullOrEmpty(result))
+                {
+                    MessageBox.Show(result);
+                }
+            }
+
             if (!game.Hunting) game.SwitchPlayers();
 
             UpdateScreenItems();
@@ -451,9 +461,13 @@ namespace DiCastSim
 
             PlaceItem(item, item.Player.Position);
 
-            if (game.PlayerLandedOnBase && game.Turn > 1)
+            if(game.PlayerLandedOnBase)
             {
-                game.Player.LandOnBase(game);
+                if( game.Turn > 1)
+                {
+                    if(game.Player.InitialPosition % 24 == game.Player.Position % 24)
+                        game.Player.LandOnBase(game);
+                }
             }
         }
     }

@@ -6,12 +6,6 @@ using System.Linq;
 
 namespace DiCastSim.Core.Models
 {
-    public class SkillPlayer
-    {
-        public int Level { get; set; }
-        public int Active { get; set; }
-    }
-
     public class Player
     {
         public int Coins { get; set; }
@@ -61,7 +55,7 @@ namespace DiCastSim.Core.Models
         public int Turns { get; set; } = 0;
         public bool LockEven { get; set; }
         public bool LockOdd { get; set; }
-        public SkillPlayer[] Skill { get; set; }
+        public SkillPlayerCollection Skill { get; set; }
         public bool CanUpgradeSkill => (Skill[0].Level + Skill[1].Level + Skill[2].Level) < 9;
 
         public PlayerSpecialDices SpecialDices = new PlayerSpecialDices();
@@ -73,7 +67,8 @@ namespace DiCastSim.Core.Models
             rand = IOC.Resolve<Randomizer>();
             CastleFabric = IOC.Resolve<CastleFabric>();
             Hand = new PlayerHand(this);
-            Skill = new HeroSkillFabric().Build(type);
+            Skill = new SkillPlayerCollection();
+            Skill.Build(type);
         }
 
         public void LevelUpSkill(Skills index)

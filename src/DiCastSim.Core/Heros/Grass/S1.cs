@@ -6,8 +6,9 @@
     {
         public S1() : base() { }
 
-        public void Do()
+        public string Trigger()
         {
+            return null;
         }
     }
 }

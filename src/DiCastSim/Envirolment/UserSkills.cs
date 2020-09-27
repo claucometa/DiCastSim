@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using DiCastSim.Core.Enums;
 using DiCastSim.Core.Models;
+using System.Windows.Forms;
 
 namespace DiCastSim
 {
@@ -26,10 +19,9 @@ namespace DiCastSim
             set
             {
                 var x = value;
-                label1.Text = x.Skill1.ToString();
-                label2.Text = x.Skill2.ToString();
-                label3.Text = x.Skill3.ToString();
-
+                label1.Text = x.Skill[Skills.One].Level.ToString();
+                label2.Text = x.Skill[Skills.Two].Level.ToString();
+                label3.Text = x.Skill[Skills.Three].Level.ToString();
             }
         }
     }
